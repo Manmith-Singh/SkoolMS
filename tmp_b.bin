@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="KRuLH4huB3iOger7cq3QJbHZ23tFbXVDJgRn0Jzz">
+    <title>SchoolMS — Greenfield Academy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <style>
+        :root { --brand:#3b6db5; --brand-dark:#2a4f87; }
+        body { background:#f4f6fb; font-family: 'Segoe UI', system-ui, sans-serif; }
+        .navbar-brand { font-weight:700; letter-spacing:.5px; }
+        .sidebar {
+            min-height: calc(100vh - 56px);
+            background: linear-gradient(180deg, #1f2d3d 0%, #2a3f57 100%);
+            color: #cfd8e3;
+            padding-top: 1rem;
+        }
+        .sidebar .nav-link {
+            color: #cfd8e3;
+            border-radius: 6px;
+            padding: .55rem .9rem;
+            margin: 2px 8px;
+            font-size: .92rem;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: rgba(255,255,255,.08);
+            color: #fff;
+        }
+        .sidebar .nav-link i { width: 20px; }
+        .sidebar .nav-section {
+            font-size: .72rem; text-transform: uppercase; letter-spacing: 1.2px;
+            color: #7c8aa0; padding: 1rem 1.2rem .35rem;
+        }
+        main.app-main { padding: 1.5rem; }
+        .stat-card {
+            border: none; border-left: 4px solid var(--brand);
+            border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,.05);
+        }
+        .stat-card .stat-value { font-size: 1.7rem; font-weight: 700; color: #2c3e50; }
+        .stat-card .stat-label { color: #7d8a9c; font-size: .8rem; text-transform: uppercase; letter-spacing: .5px; }
+        .card { border: none; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,.05); }
+        .table thead th { background: #eef2f7; color: #4a5568; font-weight: 600; text-transform: uppercase; font-size: .75rem; }
+        .badge-status-pending { background: #fff3cd; color: #856404; }
+        .badge-status-paid { background: #d4edda; color: #155724; }
+        .badge-status-partial { background: #cce5ff; color: #004085; }
+        .badge-status-overdue { background: #f8d7da; color: #721c24; }
+        .badge-status-waived { background: #e2e3e5; color: #383d41; }
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+        }
+        .print-hide { }
+        @media print {
+            .sidebar, .navbar, .print-hide, .no-print { display: none !important; }
+            main.app-main { padding: 0 !important; }
+        }
+    </style>
+    </head>
+<body>
+    <nav class="navbar navbar-dark sticky-top" style="background:var(--brand);">
+        <div class="container-fluid">
+            <button class="btn btn-sm btn-outline-light d-md-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a class="navbar-brand" href="http://greenfield.school.test:8000/dashboard">
+                <i class="fas fa-school me-2"></i>Greenfield Academy
+            </a>
+            <div class="d-flex align-items-center text-white">
+                <span class="me-3 d-none d-sm-inline">
+                    <i class="fas fa-user-circle me-1"></i>Jane Admin
+                    <small class="text-white-50 ms-1">(Admin)</small>
+                </span>
+                <form method="POST" action="http://greenfield.school.test:8000/logout" class="m-0">
+                    <input type="hidden" name="_token" value="KRuLH4huB3iOger7cq3QJbHZ23tFbXVDJgRn0Jzz" autocomplete="off">                    <button class="btn btn-sm btn-outline-light" type="submit">
+                        <i class="fas fa-sign-out-alt me-1"></i>Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+            <aside class="col-md-2 d-none d-md-block sidebar">
+                <div class="nav-section">Main</div>
+<a href="http://greenfield.school.test:8000/dashboard" class="nav-link ">
+    <i class="fas fa-tachometer-alt"></i> Dashboard
+</a>
+
+<div class="nav-section">Academics</div>
+<a href="http://greenfield.school.test:8000/classes" class="nav-link ">
+    <i class="fas fa-chalkboard"></i> Classes
+</a>
+<a href="http://greenfield.school.test:8000/subjects" class="nav-link ">
+    <i class="fas fa-book"></i> Subjects
+</a>
+<a href="http://greenfield.school.test:8000/exams" class="nav-link ">
+    <i class="fas fa-file-alt"></i> Exams
+</a>
+<a href="http://greenfield.school.test:8000/results" class="nav-link ">
+    <i class="fas fa-poll"></i> Results
+</a>
+<a href="http://greenfield.school.test:8000/attendance" class="nav-link ">
+    <i class="fas fa-calendar-check"></i> Attendance
+</a>
+
+<div class="nav-section">People</div>
+<a href="http://greenfield.school.test:8000/students" class="nav-link ">
+    <i class="fas fa-user-graduate"></i> Students
+</a>
+<a href="http://greenfield.school.test:8000/teachers" class="nav-link active">
+    <i class="fas fa-user-tie"></i> Teachers
+</a>
+
+<div class="nav-section">Finance</div>
+<a href="http://greenfield.school.test:8000/fees" class="nav-link ">
+    <i class="fas fa-file-invoice-dollar"></i> Fee Assignments
+</a>
+<a href="http://greenfield.school.test:8000/fees/payments" class="nav-link ">
+    <i class="fas fa-cash-register"></i> Payments
+</a>
+<a href="http://greenfield.school.test:8000/fees/categories" class="nav-link ">
+    <i class="fas fa-tags"></i> Fee Categories
+</a>
+
+<div class="nav-section">Reports</div>
+<a href="http://greenfield.school.test:8000/reports/results" class="nav-link ">
+    <i class="fas fa-chart-bar"></i> Exam Results
+</a>
+<a href="http://greenfield.school.test:8000/reports/attendance" class="nav-link ">
+    <i class="fas fa-chart-pie"></i> Attendance
+</a>
+<a href="http://greenfield.school.test:8000/reports/fees" class="nav-link ">
+    <i class="fas fa-money-bill-wave"></i> Fee Collection
+</a>
+            </aside>
+            <main class="col-md-10 app-main">
+                                                
+                <h4 class="mb-3">Bulk import teachers</h4>
+
+        <div class="alert alert-warning">
+        <strong>Imported:</strong> 0 created, 3 skipped.
+                    <hr class="my-2">
+            <ul class="mb-0 small">
+                                    <li>Row 2: The email has already been taken.; The employee id has already been taken.</li>
+                                    <li>Row 3: The email has already been taken.; The employee id has already been taken.</li>
+                                    <li>Row 4: The email has already been taken.; The employee id has already been taken.</li>
+                                            </ul>
+            </div>
+
+<div class="row">
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="http://greenfield.school.test:8000/teachers/import" enctype="multipart/form-data">
+                    <input type="hidden" name="_token" value="KRuLH4huB3iOger7cq3QJbHZ23tFbXVDJgRn0Jzz" autocomplete="off">                    <div class="mb-3">
+                        <label class="form-label">Excel file (.xlsx, .xls) or CSV</label>
+                        <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv" required>
+                        <div class="form-text">Max 10 MB.  The first row must contain the column headers.</div>
+                    </div>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-upload me-1"></i> Upload and import
+                    </button>
+                    <a href="http://greenfield.school.test:8000/teachers" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="card border-info">
+            <div class="card-body">
+                <h6 class="card-title"><i class="fas fa-info-circle text-info me-1"></i> Expected columns</h6>
+                <p class="small text-muted mb-2">First row of the spreadsheet is the header. Order does not matter.</p>
+                <ul class="small mb-3">
+                    <li><code>first_name</code> <span class="text-danger">*</span></li>
+                    <li><code>last_name</code> <span class="text-danger">*</span></li>
+                    <li><code>email</code> <span class="text-danger">*</span> <em class="text-muted">(must be unique)</em></li>
+                    <li><code>employee_id</code> <em class="text-muted">(optional, must be unique)</em></li>
+                    <li><code>phone</code></li>
+                    <li><code>qualification</code></li>
+                    <li><code>hire_date</code> <em class="text-muted">(YYYY-MM-DD)</em></li>
+                    <li><code>gender</code> <em class="text-muted">(male / female / other)</em></li>
+                    <li><code>address</code></li>
+                    <li><code>salary</code> <em class="text-muted">(number)</em></li>
+                    <li><code>subject_code</code> <em class="text-muted">(must match an existing subject code)</em></li>
+                </ul>
+                <a href="http://greenfield.school.test:8000/teachers/sample.xlsx" class="btn btn-outline-info btn-sm">
+                    <i class="fas fa-download me-1"></i> Download sample template (.xlsx)
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+            </main>
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileNav">
+        <div class="offcanvas-body p-0">
+            <div class="nav-section">Main</div>
+<a href="http://greenfield.school.test:8000/dashboard" class="nav-link ">
+    <i class="fas fa-tachometer-alt"></i> Dashboard
+</a>
+
+<div class="nav-section">Academics</div>
+<a href="http://greenfield.school.test:8000/classes" class="nav-link ">
+    <i class="fas fa-chalkboard"></i> Classes
+</a>
+<a href="http://greenfield.school.test:8000/subjects" class="nav-link ">
+    <i class="fas fa-book"></i> Subjects
+</a>
+<a href="http://greenfield.school.test:8000/exams" class="nav-link ">
+    <i class="fas fa-file-alt"></i> Exams
+</a>
+<a href="http://greenfield.school.test:8000/results" class="nav-link ">
+    <i class="fas fa-poll"></i> Results
+</a>
+<a href="http://greenfield.school.test:8000/attendance" class="nav-link ">
+    <i class="fas fa-calendar-check"></i> Attendance
+</a>
+
+<div class="nav-section">People</div>
+<a href="http://greenfield.school.test:8000/students" class="nav-link ">
+    <i class="fas fa-user-graduate"></i> Students
+</a>
+<a href="http://greenfield.school.test:8000/teachers" class="nav-link active">
+    <i class="fas fa-user-tie"></i> Teachers
+</a>
+
+<div class="nav-section">Finance</div>
+<a href="http://greenfield.school.test:8000/fees" class="nav-link ">
+    <i class="fas fa-file-invoice-dollar"></i> Fee Assignments
+</a>
+<a href="http://greenfield.school.test:8000/fees/payments" class="nav-link ">
+    <i class="fas fa-cash-register"></i> Payments
+</a>
+<a href="http://greenfield.school.test:8000/fees/categories" class="nav-link ">
+    <i class="fas fa-tags"></i> Fee Categories
+</a>
+
+<div class="nav-section">Reports</div>
+<a href="http://greenfield.school.test:8000/reports/results" class="nav-link ">
+    <i class="fas fa-chart-bar"></i> Exam Results
+</a>
+<a href="http://greenfield.school.test:8000/reports/attendance" class="nav-link ">
+    <i class="fas fa-chart-pie"></i> Attendance
+</a>
+<a href="http://greenfield.school.test:8000/reports/fees" class="nav-link ">
+    <i class="fas fa-money-bill-wave"></i> Fee Collection
+</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        $(function() {
+            $('table.datatable').DataTable({
+                pageLength: 25,
+                order: [],
+                language: { search: '', searchPlaceholder: 'Search...' }
+            });
+        });
+    </script>
+    </body>
+</html>

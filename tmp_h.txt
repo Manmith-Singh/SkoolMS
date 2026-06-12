@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+Host: greenfield.school.test:8000
+Connection: close
+X-Powered-By: PHP/8.2.12
+Content-Type: text/html; charset=utf-8
+Cache-Control: no-cache, private
+Date: Fri, 05 Jun 2026 19:11:29 GMT
+Set-Cookie: XSRF-TOKEN=eyJpdiI6InRUdzJnaDJPUXE3VGhib3VOaGljRnc9PSIsInZhbHVlIjoid1dJY1Qzc0ZPa0JSSHNJcjJOVkZkb3ZVZFpDZTQzSzlHMjFVa1hmaHpWTnFGcXd6emRWLzJUNzkycU12NkFnSFIvZ0svbW4rZDREckd5RjU3cmVLelZRZStxM21tOXBmNlVVUjJZMkZZeXpWYXhFNWc2Mnh2NVhLUTdkK0k2SVoiLCJtYWMiOiIyOTFjZWZiYTlkMmY0NzU4ZGYyYTc4ZjI4NjU1NGE4NWMwMDI0YmJiMGIzNTEyODZlNjIzZWZiMTA1YzFiNzk1IiwidGFnIjoiIn0%3D; expires=Fri, 05 Jun 2026 21:11:29 GMT; Max-Age=7200; path=/; samesite=lax
+Set-Cookie: schoolms_session=eyJpdiI6IkZrMjRTMDY5V2oramNLTnY2cnBFRlE9PSIsInZhbHVlIjoiTkt3UHlvQWcwMFZkak1BSTFqMWNuZ2JMaFFEOGpPSkZDYmxvRDZrNUhCRVlzUFdQT0M3bStqQkIxUDlJT3JPMnFRZjV1ZjcvbkdKT2Y5SzcxaXEvVjFhRmdtTlNXYkpiWS9KOE0vUWR2M3RNOG9aY2dyTkt0Sjh5UkhyaXJnUUoiLCJtYWMiOiI5NzI4ZjAyNjc3MjczNDBlZmE0NTA0NDBhZDBlMWVjODBlZjYxNzdlMDA2MWU1Yzg5NWZiNzI5NzBjOTM2ZDRlIiwidGFnIjoiIn0%3D; expires=Fri, 05 Jun 2026 21:11:29 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+

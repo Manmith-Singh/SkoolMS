@@ -1,0 +1,66 @@
+
+   WARN  Unable to respect the `PHP_CLI_SERVER_WORKERS` environment variable without the `--no-reload` flag. Only creating a single server.  
+
+   INFO  Server running on [http://0.0.0.0:8000].  
+
+  Press Ctrl+C to stop the server
+
+
+   INFO  Environment modified. Restarting server...  
+
+   INFO  Server running on [http://0.0.0.0:8000].  
+
+  Press Ctrl+C to stop the server
+
+
+   INFO  Environment modified. Restarting server...  
+
+   INFO  Server running on [http://0.0.0.0:8000].  
+
+  Press Ctrl+C to stop the server
+
+  2026-06-05 22:47:12 /logout .............................................................................. ~ 0.11ms
+  2026-06-05 22:47:12 /login ............................................................................. ~ 512.21ms
+  2026-06-05 22:47:16 /login ............................................................................. ~ 514.51ms
+  2026-06-05 22:47:16 /favicon.ico ......................................................................... ~ 0.04ms
+  2026-06-05 22:47:19 /login ............................................................................. ~ 500.90ms
+  2026-06-05 22:47:20 /admin ............................................................................... ~ 0.02ms
+  2026-06-05 22:47:22 /register-school ......................................................................... ~ 2s
+  2026-06-05 22:47:24 /dashboard ........................................................................... ~ 0.03ms
+  2026-06-05 22:47:26 /classes ........................................................................... ~ 501.43ms
+  2026-06-05 22:47:28 .......................................................................................... ~ 5s
+
+   INFO  Environment modified. Restarting server...  
+
+   INFO  Server running on [http://0.0.0.0:8000].  
+
+  Press Ctrl+C to stop the server
+
+
+   INFO  Environment modified. Restarting server...  
+
+   INFO  Server running on [http://0.0.0.0:8000].  
+
+  Press Ctrl+C to stop the server
+
+
+   INFO  Environment modified. Restarting server...  
+
+   INFO  Server running on [http://0.0.0.0:8000].  
+
+  Press Ctrl+C to stop the server
+
+
+   INFO  Environment modified. Restarting server...  
+
+   INFO  Server running on [http://0.0.0.0:8000].  
+
+  Press Ctrl+C to stop the server
+
+
+   INFO  Environment modified. Restarting server...  
+
+   INFO  Server running on [http://0.0.0.0:8000].  
+
+  Press Ctrl+C to stop the server
+
