@@ -20,17 +20,17 @@ class ReportController extends Controller
 
     public function results(Request $request): View
     {
-        $query = Result::with(['exam.subject', 'exam.classes', 'student']);
+        $query = Result::with(['exam.subjects', 'exam.classes', 'student']);
 
         if ($request->filled('exam_id')) {
             $query->where('exam_id', $request->integer('exam_id'));
         }
         if ($request->filled('class_id')) {
-            $query->whereHas('student', fn ($q) => $q->where('class_id', $request->integer('class_id')));
+            $query->whereHas('student', fn ($q) => $q->whereIn('class_id', (array) $request->input('class_id')));
         }
 
         $results = $query->orderByDesc('id')->limit(500)->get();
-        $exams   = Exam::orderByDesc('date')->limit(100)->get();
+        $exams   = Exam::orderByDesc('from_date')->limit(100)->get();
         $classes = SchoolClass::orderBy('name')->get();
 
         $summary = [
@@ -46,15 +46,23 @@ class ReportController extends Controller
     public function attendance(Request $request): View
     {
         $month = $request->input('month', now()->format('Y-m'));
-        $classId = $request->integer('class_id');
+        $classIds = $request->input('class_id');
 
         $students = Student::with(['attendance' => function ($q) use ($month) {
             $q->whereRaw("DATE_FORMAT(date, '%Y-%m') = ?", [$month]);
-        }])->when($classId, fn ($q) => $q->where('class_id', $classId))->get();
+        }]);
 
+        if (! empty($classIds) && is_array($classIds)) {
+            $classIds = array_values(array_filter($classIds));
+            if (! empty($classIds)) {
+                $students->whereIn('class_id', $classIds);
+            }
+        }
+
+        $students = $students->get();
         $classes = SchoolClass::orderBy('name')->get();
 
-        return view('reports.attendance', compact('students', 'classes', 'month', 'classId'));
+        return view('reports.attendance', compact('students', 'classes', 'month', 'classIds'));
     }
 
     public function fees(Request $request): View

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Tenant;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tenant\SchoolClass;
 use App\Models\Tenant\Subject;
 use App\Models\Tenant\Teacher;
 use Illuminate\Http\RedirectResponse;
@@ -13,7 +14,7 @@ class TeacherController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = Teacher::with('subject');
+        $query = Teacher::with('subject', 'subjects', 'classTeacher');
 
         if ($request->filled('q')) {
             $term = '%' . $request->string('q') . '%';
@@ -32,7 +33,8 @@ class TeacherController extends Controller
     public function create(): View
     {
         $subjects = Subject::orderBy('name')->get();
-        return view('teachers.create', compact('subjects'));
+        $classes  = SchoolClass::orderBy('name')->get();
+        return view('teachers.create', compact('subjects', 'classes'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -43,25 +45,39 @@ class TeacherController extends Controller
             $data['employee_id'] = 'T-' . date('Y') . '-' . str_pad((string) (Teacher::max('id') + 1), 4, '0', STR_PAD_LEFT);
         }
 
-        Teacher::create($data);
+        $subjectIds = $data['subject_id'] ?? [];
+        unset($data['subject_id']);
+
+        $teacher = Teacher::create($data);
+        $teacher->subjects()->sync($subjectIds);
+
         return redirect()->route('teachers.index')->with('success', 'Teacher added.');
     }
 
     public function show(Teacher $teacher): View
     {
+        $teacher->load('subject', 'subjects', 'classTeacher');
         return view('teachers.show', compact('teacher'));
     }
 
     public function edit(Teacher $teacher): View
     {
         $subjects = Subject::orderBy('name')->get();
-        return view('teachers.edit', compact('teacher', 'subjects'));
+        $classes  = SchoolClass::orderBy('name')->get();
+        $teacher->load('subjects');
+        return view('teachers.edit', compact('teacher', 'subjects', 'classes'));
     }
 
     public function update(Request $request, Teacher $teacher): RedirectResponse
     {
         $data = $this->validateTeacher($request, $teacher->id);
+
+        $subjectIds = $data['subject_id'] ?? [];
+        unset($data['subject_id']);
+
         $teacher->update($data);
+        $teacher->subjects()->sync($subjectIds);
+
         return redirect()->route('teachers.index')->with('success', 'Teacher updated.');
     }
 
@@ -74,17 +90,19 @@ class TeacherController extends Controller
     protected function validateTeacher(Request $request, ?int $id = null): array
     {
         return $request->validate([
-            'employee_id'   => ['nullable', 'string', 'max:50', 'unique:tenant.teachers,employee_id,' . ($id ?? 'NULL') . ',id'],
-            'first_name'    => ['required', 'string', 'max:100'],
-            'last_name'     => ['required', 'string', 'max:100'],
-            'email'         => ['required', 'email', 'max:191', 'unique:tenant.teachers,email,' . ($id ?? 'NULL') . ',id'],
-            'phone'         => ['nullable', 'string', 'max:30'],
-            'qualification' => ['nullable', 'string', 'max:191'],
-            'hire_date'     => ['nullable', 'date'],
-            'gender'        => ['nullable', 'in:male,female,other'],
-            'address'       => ['nullable', 'string'],
-            'salary'        => ['nullable', 'numeric', 'min:0'],
-            'subject_id'    => ['nullable', 'exists:tenant.subjects,id'],
+            'employee_id'     => ['nullable', 'string', 'max:50', 'unique:tenant.teachers,employee_id,' . ($id ?? 'NULL') . ',id'],
+            'first_name'      => ['required', 'string', 'max:100'],
+            'last_name'       => ['required', 'string', 'max:100'],
+            'email'           => ['required', 'email', 'max:191', 'unique:tenant.teachers,email,' . ($id ?? 'NULL') . ',id'],
+            'phone'           => ['nullable', 'string', 'max:30'],
+            'qualification'   => ['nullable', 'string', 'max:191'],
+            'hire_date'       => ['nullable', 'date'],
+            'gender'          => ['nullable', 'in:male,female,other'],
+            'address'         => ['nullable', 'string'],
+            'salary'          => ['nullable', 'numeric', 'min:0'],
+            'subject_id'      => ['nullable', 'array'],
+            'subject_id.*'    => ['required', 'exists:tenant.subjects,id'],
+            'class_teacher_id'=> ['nullable', 'exists:tenant.classes,id'],
         ]);
     }
 }

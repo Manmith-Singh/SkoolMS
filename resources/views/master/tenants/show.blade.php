@@ -12,6 +12,7 @@
     <div class="btn-group">
         <a href="{{ $tenant->url() }}" target="_blank" class="btn btn-outline-primary"><i class="fas fa-external-link-alt me-1"></i>Open</a>
         <a href="{{ route('master.tenants.edit', $tenant) }}" class="btn btn-outline-secondary"><i class="fas fa-edit me-1"></i>Edit</a>
+        <a href="{{ route('master.tenants.academic-years', $tenant) }}" class="btn btn-outline-info"><i class="fas fa-calendar-alt me-1"></i>Academic Years</a>
         @if($tenant->status === 'active')
             <form method="POST" action="{{ route('master.tenants.suspend', $tenant) }}" class="d-inline">
                 @csrf

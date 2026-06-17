@@ -44,7 +44,7 @@
         <table class="table mb-0 datatable">
             <thead>
                 <tr>
-                    <th>#</th><th>Name</th><th>Subdomain</th><th>DB</th><th>Plan</th><th>Status</th><th>Created</th><th></th>
+                    <th>#</th><th>Name</th><th>Subdomain</th><th>DB</th><th>Plan</th><th>Status</th><th>Created</th><th>Sub. Ends</th><th></th>
                 </tr>
             </thead>
             <tbody>
@@ -59,6 +59,7 @@
                         <span class="badge bg-{{ $t->status === 'active' ? 'success' : ($t->status === 'suspended' ? 'danger' : 'secondary') }}">{{ $t->status }}</span>
                     </td>
                     <td>{{ $t->created_at->format('Y-m-d') }}</td>
+                    <td>{{ $t->subscription_ends_at?->format('Y-m-d') ?? '—' }}</td>
                     <td class="text-end">
                         <a href="{{ route('master.tenants.edit', $t) }}" class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></a>
                         @if($t->status === 'active')

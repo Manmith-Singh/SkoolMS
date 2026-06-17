@@ -46,7 +46,13 @@
                 <tr>
                     <td><code>{{ $t->employee_id }}</code></td>
                     <td>{{ $t->full_name }}</td>
-                    <td>{{ $t->subject->name ?? '—' }}</td>
+                    <td>
+                        @if($t->subjects->isNotEmpty())
+                            @foreach($t->subjects as $s)<span class="badge bg-info me-1">{{ $s->name }}</span>@endforeach
+                        @else
+                            {{ $t->subject->name ?? '—' }}
+                        @endif
+                    </td>
                     <td>{{ $t->email }}</td>
                     <td>{{ $t->phone ?? '—' }}</td>
                     <td>{{ $t->qualification ?? '—' }}</td>

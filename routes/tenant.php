@@ -5,6 +5,7 @@ use App\Http\Controllers\Tenant\BulkImportController;
 use App\Http\Controllers\Tenant\ClassController;
 use App\Http\Controllers\Tenant\DashboardController;
 use App\Http\Controllers\Tenant\ExamController;
+use App\Http\Controllers\Tenant\ExamTypeController;
 use App\Http\Controllers\Tenant\FeeCategoryController;
 use App\Http\Controllers\Tenant\FeeController;
 use App\Http\Controllers\Tenant\FeePaymentController;
@@ -61,6 +62,9 @@ Route::middleware('auth')->group(function () {
     // Subjects
     Route::resource('subjects', SubjectController::class);
 
+    // Exam Types
+    Route::resource('exam-types', ExamTypeController::class)->except('show');
+
     // Exams
     Route::resource('exams', ExamController::class);
 
@@ -95,6 +99,9 @@ Route::middleware('auth')->group(function () {
     Route::post('fees', [FeeController::class, 'store'])->name('fees.store');
     Route::get('fees/{fee}', [FeeController::class, 'show'])->name('fees.show');
     Route::delete('fees/{fee}', [FeeController::class, 'destroy'])->name('fees.destroy');
+
+    // Academic Year (year selector)
+    Route::post('academic-years/switch', [App\Http\Controllers\Tenant\AcademicYearController::class, 'switch'])->name('academic-years.switch');
 
     // Reports
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');

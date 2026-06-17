@@ -11,7 +11,9 @@
             @else
                 —
             @endif
-            · {{ $exam->subject->name }} · Max {{ $exam->max_marks }}
+            · @if($exam->subjects->isNotEmpty())
+                @foreach($exam->subjects as $s)<span class="badge bg-info me-1">{{ $s->name }}</span>@endforeach
+              @endif · Max {{ $exam->max_marks }}
         </small>
     </div>
     <a href="{{ route('exams.index') }}" class="btn btn-secondary">Back</a>

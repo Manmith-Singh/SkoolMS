@@ -2,8 +2,10 @@
 
 namespace App\Models\Master;
 
+use App\Services\TenantDatabaseManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Cache;
 
 class Tenant extends Model
 {
@@ -19,6 +21,8 @@ class Tenant extends Model
         'contact_email',
         'contact_phone',
         'address',
+        'plan_id',
+        'subscription_ends_at',
         'trial_ends_at',
     ];
 
@@ -27,7 +31,9 @@ class Tenant extends Model
     ];
 
     protected $casts = [
-        'trial_ends_at' => 'datetime',
+        'plan_id'             => 'integer',
+        'subscription_ends_at' => 'datetime',
+        'trial_ends_at'       => 'datetime',
     ];
 
     public function users(): HasMany
@@ -48,6 +54,40 @@ class Tenant extends Model
     public function isActive(): bool
     {
         return $this->status === 'active';
+    }
+
+    public function isExpired(): bool
+    {
+        return $this->subscription_ends_at && $this->subscription_ends_at->isPast();
+    }
+
+    /**
+     * Re-activate a suspended tenant and extend subscription by the plan's billing period.
+     * Returns true if reactivated, false if no plan is assigned.
+     */
+    public function reactivateAfterPayment(): bool
+    {
+        if (! $this->plan) {
+            return false;
+        }
+
+        $extension = match ($this->plan->billing_period) {
+            'monthly'     => now()->addMonth(),
+            'quarterly'   => now()->addMonths(3),
+            'half_yearly'=> now()->addMonths(6),
+            'yearly'      => now()->addYear(),
+            'one_time'    => now()->addYear(5),
+            default       => now()->addMonth(),
+        };
+
+        $this->update([
+            'status'              => 'active',
+            'subscription_ends_at' => $extension,
+        ]);
+
+        Cache::forget('tenant:subdomain:' . $this->subdomain);
+
+        return true;
     }
 
     public function url(): string

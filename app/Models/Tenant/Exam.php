@@ -2,6 +2,7 @@
 
 namespace App\Models\Tenant;
 
+use App\Models\Tenant\Scopes\AcademicYearScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -12,14 +13,26 @@ class Exam extends Model
     protected $connection = 'tenant';
 
     protected $fillable = [
-        'name', 'class_id', 'subject_id', 'date', 'max_marks', 'pass_marks', 'description',
+        'name', 'class_id', 'exam_type_id', 'from_date', 'to_date',
+        'max_marks', 'pass_marks', 'description', 'academic_year_id',
     ];
 
     protected $casts = [
-        'date' => 'date',
+        'from_date' => 'date',
+        'to_date'   => 'date',
         'max_marks' => 'decimal:2',
         'pass_marks' => 'decimal:2',
     ];
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new AcademicYearScope);
+    }
+
+    public function academicYear(): BelongsTo
+    {
+        return $this->belongsTo(AcademicYear::class, 'academic_year_id');
+    }
 
     public function schoolClass(): BelongsTo
     {
@@ -35,9 +48,19 @@ class Exam extends Model
             ->withTimestamps();
     }
 
-    public function subject(): BelongsTo
+    public function examType(): BelongsTo
     {
-        return $this->belongsTo(Subject::class);
+        return $this->belongsTo(ExamType::class);
+    }
+
+    /**
+     * All subjects covered in this exam, with per-subject date/notes/order.
+     */
+    public function subjects(): BelongsToMany
+    {
+        return $this->belongsToMany(Subject::class, 'exam_subject', 'exam_id', 'subject_id')
+            ->withPivot(['date', 'notes', 'order'])
+            ->withTimestamps();
     }
 
     public function results(): HasMany

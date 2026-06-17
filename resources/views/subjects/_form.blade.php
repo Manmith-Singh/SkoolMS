@@ -9,8 +9,7 @@
         <input type="text" name="code" value="{{ $val('code') }}" class="form-control">
     </div>
     <div class="col-md-4">
-        <label class="form-label">Class (Multi-Select) *</label>
-        @include('partials._class_select', [
+        @include('partials._class_section_fields', [
             'name'     => 'class_id',
             'classes'  => $classes,
             'selected' => old('class_id') !== null
@@ -18,8 +17,6 @@
                 : ($subject && $subject->exists
                     ? $subject->classes->pluck('id')->all()
                     : ($subject?->class_id ? [$subject->class_id] : [])),
-            'required' => true,
-            'size'     => 4,
         ])
     </div>
     <div class="col-12">

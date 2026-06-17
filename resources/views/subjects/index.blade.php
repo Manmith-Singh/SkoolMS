@@ -11,12 +11,11 @@
     <div class="card-body">
         <form method="GET" class="row g-2">
             <div class="col-md-4">
-                <select name="class_id" class="form-select">
-                    <option value="">All classes</option>
-                    @foreach($classes as $c)
-                        <option value="{{ $c->id }}" @selected(request('class_id') == $c->id)>{{ $c->display_name }}</option>
-                    @endforeach
-                </select>
+                @include('partials._class_section_fields', [
+                    'name'     => 'class_id',
+                    'classes'  => $classes,
+                    'selected' => (array) (request('class_id') ?? []),
+                ])
             </div>
             <div class="col-md-2">
                 <button class="btn btn-outline-primary w-100"><i class="fas fa-filter"></i> Filter</button>

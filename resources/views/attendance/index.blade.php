@@ -14,12 +14,12 @@
                 <input type="date" name="date" value="{{ request('date') }}" class="form-control">
             </div>
             <div class="col-md-3">
-                <select name="class_id" class="form-select">
-                    <option value="">All classes</option>
-                    @foreach($classes as $c)
-                        <option value="{{ $c->id }}" @selected(request('class_id') == $c->id)>{{ $c->display_name }}</option>
-                    @endforeach
-                </select>
+                @include('partials._class_section_fields', [
+                    'name'       => 'class_id',
+                    'classes'    => $classes,
+                    'selected'   => (array) (request('class_id') ?? []),
+                    'hideLabels' => true,
+                ])
             </div>
             <div class="col-md-3">
                 <select name="status" class="form-select">

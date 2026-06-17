@@ -32,12 +32,11 @@
     </div>
 
     <div class="col-md-6" id="classBox" style="display:none;">
-        <label class="form-label">Class (Multi-Select)</label>
-        @include('partials._class_select', [
+        <label class="form-label">Class & Section</label>
+        @include('partials._class_section_fields', [
             'name'     => 'class_id',
             'classes'  => $classes,
             'selected' => old('class_id') !== null ? (array) old('class_id') : [],
-            'size'     => 4,
         ])
     </div>
 

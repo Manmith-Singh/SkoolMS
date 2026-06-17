@@ -106,6 +106,20 @@ class InvoiceController extends Controller
         $invoice->update(['status' => 'paid', 'paid_at' => now()]);
         AuditLog::record('invoice.marked_paid', $invoice);
 
+        // Auto-reactivate tenant if they were suspended due to expiry
+        $tenant = $invoice->tenant;
+        if ($tenant && $tenant->status === 'suspended' && $tenant->plan) {
+            $reactivated = $tenant->reactivateAfterPayment();
+            if ($reactivated) {
+                AuditLog::record('tenant.auto_reactivated', $tenant, [
+                    'name'      => $tenant->name,
+                    'subdomain' => $tenant->subdomain,
+                    'reason'    => 'invoice_marked_paid',
+                    'invoice'   => $invoice->invoice_number,
+                ]);
+            }
+        }
+
         return back()->with('success', "Invoice {$invoice->invoice_number} marked as paid.");
     }
 

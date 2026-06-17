@@ -81,7 +81,7 @@ class StudentController extends Controller
     {
         $studentId = $request->route('student')?->id;
 
-        return $request->validate([
+        $data = $request->validate([
             'admission_no'   => ['nullable', 'string', 'max:50', 'unique:tenant.students,admission_no,' . ($studentId ?? 'NULL') . ',id'],
             'first_name'     => ['required', 'string', 'max:100'],
             'last_name'      => ['required', 'string', 'max:100'],
@@ -94,7 +94,14 @@ class StudentController extends Controller
             'guardian_name'  => ['nullable', 'string', 'max:191'],
             'guardian_phone' => ['nullable', 'string', 'max:30'],
             'admission_date' => ['nullable', 'date'],
-            'class_id'       => ['nullable', 'exists:tenant.classes,id'],
+            'class_id'       => ['nullable', 'array'],
+            'class_id.*'     => ['nullable', 'exists:tenant.classes,id'],
         ]);
+
+        $classIds = (array) ($data['class_id'] ?? []);
+        $classIds = array_values(array_filter($classIds));
+        $data['class_id'] = ! empty($classIds) ? (int) $classIds[0] : null;
+
+        return $data;
     }
 }

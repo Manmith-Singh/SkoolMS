@@ -73,6 +73,20 @@ class PaymentController extends Controller
             $payment->invoice->refresh();
             if ($payment->invoice->amountDue() <= 0) {
                 $payment->invoice->update(['status' => 'paid', 'paid_at' => now()]);
+
+                // Auto-reactivate tenant if they were suspended due to expiry
+                $tenant = $payment->invoice->tenant;
+                if ($tenant && $tenant->status === 'suspended' && $tenant->plan) {
+                    $reactivated = $tenant->reactivateAfterPayment();
+                    if ($reactivated) {
+                        AuditLog::record('tenant.auto_reactivated', $tenant, [
+                            'name'      => $tenant->name,
+                            'subdomain' => $tenant->subdomain,
+                            'reason'    => 'invoice_paid',
+                            'invoice'   => $payment->invoice->invoice_number,
+                        ]);
+                    }
+                }
             }
         }
 

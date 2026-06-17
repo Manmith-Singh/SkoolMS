@@ -11,12 +11,13 @@
     <div class="card-body p-0">
         <table class="table datatable mb-0">
             <thead>
-                <tr><th>Name</th><th>Class</th><th>Subject</th><th>Date</th><th>Max</th><th>Pass</th><th class="no-sort">Actions</th></tr>
+                <tr><th>Name</th><th>Type</th><th>Class</th><th>Subjects</th><th>Period</th><th>Max</th><th>Pass</th><th class="no-sort">Actions</th></tr>
             </thead>
             <tbody>
                 @foreach($exams as $e)
                 <tr>
                     <td>{{ $e->name }}</td>
+                    <td>{{ $e->examType->name ?? '—' }}</td>
                     <td>
                         @if($e->classes->isNotEmpty())
                             @foreach($e->classes as $c)
@@ -26,8 +27,22 @@
                             <span class="text-muted">—</span>
                         @endif
                     </td>
-                    <td>{{ $e->subject->name ?? '—' }}</td>
-                    <td>{{ $e->date->format('d M Y') }}</td>
+                    <td>
+                        @if($e->subjects->isNotEmpty())
+                            @foreach($e->subjects as $s)
+                                <span class="badge bg-info me-1">{{ $s->name }}</span>
+                            @endforeach
+                        @else
+                            <span class="text-muted">—</span>
+                        @endif
+                    </td>
+                    <td>
+                        @if($e->from_date)
+                            {{ $e->from_date->format('d M') }} – {{ $e->to_date->format('d M Y') }}
+                        @else
+                            <span class="text-muted">—</span>
+                        @endif
+                    </td>
                     <td>{{ $e->max_marks }}</td>
                     <td>{{ $e->pass_marks }}</td>
                     <td>

@@ -4,6 +4,7 @@ namespace App\Models\Tenant;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Teacher extends Model
 {
@@ -12,7 +13,7 @@ class Teacher extends Model
     protected $fillable = [
         'employee_id', 'first_name', 'last_name', 'email', 'phone',
         'qualification', 'hire_date', 'gender', 'address', 'salary',
-        'subject_id',
+        'subject_id', 'class_teacher_id',
     ];
 
     protected $casts = [
@@ -23,6 +24,17 @@ class Teacher extends Model
     public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class);
+    }
+
+    public function subjects(): BelongsToMany
+    {
+        return $this->belongsToMany(Subject::class, 'teacher_subject', 'teacher_id', 'subject_id')
+            ->withTimestamps();
+    }
+
+    public function classTeacher(): BelongsTo
+    {
+        return $this->belongsTo(SchoolClass::class, 'class_teacher_id');
     }
 
     public function getFullNameAttribute(): string

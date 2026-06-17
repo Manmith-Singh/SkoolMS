@@ -9,32 +9,120 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <style>
-        :root { --brand:#3b6db5; --brand-dark:#2a4f87; }
+        :root { --brand:#3b6db5; --brand-dark:#2a4f87; --sidebar-bg:#1e293b; --sidebar-text:#94a3b8; --sidebar-active:#fff; --sidebar-hover-bg:rgba(255,255,255,.08); }
         body { background:#f4f6fb; font-family: 'Segoe UI', system-ui, sans-serif; }
         .navbar-brand { font-weight:700; letter-spacing:.5px; }
-        .sidebar {
+
+        /* ── Sidebar fixed layout ── */
+        .sidebar-main {
+            position: fixed;
+            top: 56px;
+            left: 0;
+            width: 16rem;
+            height: calc(100vh - 56px);
+            background: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            z-index: 1030;
+            overflow-y: auto;
+            transform: translateX(-100%);
+            transition: transform .3s ease-in-out;
+        }
+        .sidebar-main.open { transform: translateX(0); }
+
+        @media (min-width: 768px) {
+            .sidebar-main {
+                transform: translateX(0);
+            }
+        }
+
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            top: 56px;
+            background: rgba(0,0,0,.5);
+            z-index: 1025;
+        }
+
+        .app-main {
             min-height: calc(100vh - 56px);
-            background: linear-gradient(180deg, #1f2d3d 0%, #2a3f57 100%);
-            color: #cfd8e3;
-            padding-top: 1rem;
+            padding: 1.5rem;
+            transition: margin-left .3s ease-in-out;
         }
-        .sidebar .nav-link {
-            color: #cfd8e3;
+        @media (min-width: 768px) {
+            .app-main { margin-left: 16rem; }
+        }
+
+        /* ── Sidebar inner content ── */
+        .sidebar-inner { padding: .75rem .5rem 2rem; }
+
+        .sidebar-inner .nav-link {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            color: var(--sidebar-text);
             border-radius: 6px;
-            padding: .55rem .9rem;
-            margin: 2px 8px;
-            font-size: .92rem;
+            padding: .5rem .75rem;
+            margin: 1px 0;
+            font-size: .875rem;
+            text-decoration: none;
+            transition: background .15s, color .15s;
         }
-        .sidebar .nav-link:hover, .sidebar .nav-link.active {
-            background: rgba(255,255,255,.08);
-            color: #fff;
+        .sidebar-inner .nav-link:hover,
+        .sidebar-inner .nav-link.active {
+            background: var(--sidebar-hover-bg);
+            color: var(--sidebar-active);
         }
-        .sidebar .nav-link i { width: 20px; }
-        .sidebar .nav-section {
-            font-size: .72rem; text-transform: uppercase; letter-spacing: 1.2px;
-            color: #7c8aa0; padding: 1rem 1.2rem .35rem;
+        .sidebar-inner .nav-link i { width: 1.1rem; text-align: center; font-size: .95rem; }
+        .sidebar-inner .nav-link.active i { color: #60a5fa; }
+
+        .sidebar-inner .nav-section {
+            font-size: .65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            padding: 1rem .75rem .25rem;
         }
-        main.app-main { padding: 1.5rem; }
+
+        /* ── Accordion ── */
+        .accordion-group { margin: 0; }
+        .accordion-trigger {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: var(--sidebar-text);
+            border-radius: 6px;
+            padding: .5rem .75rem;
+            font-size: .875rem;
+            cursor: pointer;
+            transition: background .15s, color .15s;
+        }
+        .accordion-trigger:hover { background: var(--sidebar-hover-bg); color: var(--sidebar-active); }
+        .accordion-trigger i:first-child { width: 1.1rem; text-align: center; font-size: .95rem; }
+        .accordion-chevron {
+            margin-left: auto;
+            transition: transform .25s ease;
+            font-size: .75rem;
+            color: #64748b;
+        }
+        .accordion-chevron.rotated { transform: rotate(180deg); }
+
+        .accordion-body {
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height .35s ease, opacity .25s ease;
+        }
+        .accordion-body.open {
+            max-height: 600px;
+            opacity: 1;
+        }
+        .accordion-body .nav-link { padding-left: 2.25rem !important; }
+
+        /* ── Misc ── */
         .stat-card {
             border: none; border-left: 4px solid var(--brand);
             border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,.05);
@@ -48,27 +136,27 @@
         .badge-status-partial { background: #cce5ff; color: #004085; }
         .badge-status-overdue { background: #f8d7da; color: #721c24; }
         .badge-status-waived { background: #e2e3e5; color: #383d41; }
-        @media (max-width: 768px) {
-            .sidebar { display: none; }
-        }
         .print-hide { }
         @media print {
-            .sidebar, .navbar, .print-hide, .no-print { display: none !important; }
-            main.app-main { padding: 0 !important; }
+            .sidebar-main, .navbar, .sidebar-backdrop, .print-hide, .no-print { display: none !important; }
+            main.app-main { margin-left: 0 !important; padding: 0 !important; }
         }
     </style>
     @stack('styles')
 </head>
-<body>
+<body x-data="{ sidebarOpen: false }" @keydown.escape="sidebarOpen = false">
     <nav class="navbar navbar-dark sticky-top" style="background:var(--brand);">
         <div class="container-fluid">
-            <button class="btn btn-sm btn-outline-light d-md-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav">
-                <i class="fas fa-bars"></i>
-            </button>
-            <a class="navbar-brand" href="{{ route('dashboard') }}">
-                <i class="fas fa-school me-2"></i>{{ $currentTenant->name ?? config('app.name') }}
-            </a>
+            <div class="d-flex align-items-center">
+                <button @click="sidebarOpen = !sidebarOpen" class="btn btn-sm btn-outline-light d-md-none me-2" type="button" aria-label="Toggle sidebar" :aria-expanded="sidebarOpen">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a class="navbar-brand" href="{{ route('dashboard') }}">
+                    <i class="fas fa-school me-2"></i>{{ $currentTenant->name ?? config('app.name') }}
+                </a>
+            </div>
             <div class="d-flex align-items-center text-white">
+                @include('partials._academic_year_selector')
                 <span class="me-3 d-none d-sm-inline">
                     <i class="fas fa-user-circle me-1"></i>{{ auth()->user()->name }}
                     <small class="text-white-50 ms-1">({{ ucfirst(str_replace('_',' ', auth()->user()->role)) }})</small>
@@ -83,45 +171,52 @@
         </div>
     </nav>
 
-    <div class="container-fluid p-0">
-        <div class="row g-0">
-            <aside class="col-md-2 d-none d-md-block sidebar">
-                @include('partials.sidebar')
-            </aside>
-            <main class="col-md-10 app-main">
-                @if (session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="fas fa-check-circle me-1"></i>{{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
-                @if (session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="fas fa-exclamation-circle me-1"></i>{{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul class="mb-0 ps-3">
-                            @foreach ($errors->all() as $err)
-                                <li>{{ $err }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+    {{-- Sidebar --}}
+    <aside id="sidebar" class="sidebar-main" :class="{'open': sidebarOpen}" role="navigation" aria-label="Main navigation">
+        @include('partials.sidebar')
+    </aside>
 
-                @yield('content')
-            </main>
-        </div>
+    {{-- Backdrop (mobile only) --}}
+    <div x-show="sidebarOpen"
+         class="sidebar-backdrop d-md-none"
+         @click="sidebarOpen = false"
+         x-transition:enter="transition-opacity duration-300"
+         x-transition:leave="transition-opacity duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         role="presentation">
     </div>
 
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileNav">
-        <div class="offcanvas-body p-0">
-            @include('partials.sidebar')
-        </div>
-    </div>
+    {{-- Main content --}}
+    <main class="app-main">
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-1"></i>{{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-1"></i>{{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0 ps-3">
+                    @foreach ($errors->all() as $err)
+                        <li>{{ $err }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
+        @yield('content')
+    </main>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>

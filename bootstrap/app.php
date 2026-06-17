@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\IdentifyTenant;
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Middleware\SecureHeaders;
 use App\Http\Middleware\SwitchTenantDatabase;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -16,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->prependToGroup('web', IdentifyTenant::class);
         $middleware->appendToGroup('web', SwitchTenantDatabase::class);
+        $middleware->appendToGroup('web', SecureHeaders::class);
 
         $middleware->alias([
             'role' => RoleMiddleware::class,

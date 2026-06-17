@@ -1,4 +1,9 @@
-@php $val = fn ($k, $d = '') => old($k, $teacher->{$k} ?? $d); @endphp
+@php
+    $val = fn ($k, $d = '') => old($k, $teacher->{$k} ?? $d);
+    $selectedSubjectIds = old('subject_id') !== null
+        ? (array) old('subject_id')
+        : ($teacher && $teacher->exists ? $teacher->subjects->pluck('id')->all() : []);
+@endphp
 <div class="row g-3">
     <div class="col-md-3">
         <label class="form-label">Employee ID</label>
@@ -30,15 +35,6 @@
         <input type="text" name="phone" value="{{ $val('phone') }}" class="form-control">
     </div>
     <div class="col-md-4">
-        <label class="form-label">Subject</label>
-        <select name="subject_id" class="form-select">
-            <option value="">—</option>
-            @foreach($subjects as $s)
-                <option value="{{ $s->id }}" @selected($val('subject_id') == $s->id)>{{ $s->name }} ({{ $s->schoolClass->display_name ?? '' }})</option>
-            @endforeach
-        </select>
-    </div>
-    <div class="col-md-4">
         <label class="form-label">Qualification</label>
         <input type="text" name="qualification" value="{{ $val('qualification') }}" class="form-control">
     </div>
@@ -49,6 +45,21 @@
     <div class="col-md-4">
         <label class="form-label">Salary</label>
         <input type="number" step="0.01" name="salary" value="{{ $val('salary') }}" class="form-control">
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Class Teacher</label>
+        <select name="class_teacher_id" class="form-select">
+            <option value="">—</option>
+            @foreach($classes as $c)
+                <option value="{{ $c->id }}" @selected($val('class_teacher_id') == $c->id)>{{ $c->display_name }}</option>
+            @endforeach
+        </select>
+    </div>
+    <div class="col-md-12">
+        @include('partials._subject_multiselect', [
+            'subjects'  => $subjects,
+            'selected'  => $selectedSubjectIds,
+        ])
     </div>
     <div class="col-md-12">
         <label class="form-label">Address</label>

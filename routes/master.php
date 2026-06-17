@@ -11,6 +11,7 @@ use App\Http\Controllers\Master\SecurityController;
 use App\Http\Controllers\Master\SubscriptionPlanController;
 use App\Http\Controllers\Master\SupportTicketController;
 use App\Http\Controllers\Master\SystemSettingController;
+use App\Http\Controllers\Master\AcademicYearMasterController;
 use App\Http\Controllers\Master\TenantController;
 use App\Http\Controllers\Master\TenantRegistrationController;
 use App\Http\Controllers\Master\UserController;
@@ -44,7 +45,7 @@ Route::get('/', function () {
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('master.login');
-    Route::post('/login', [AuthController::class, 'login'])->name('master.login.attempt');
+    Route::post('/login', [AuthController::class, 'login'])->name('master.login.attempt')->middleware('throttle:5,1');
 });
 
 
@@ -72,6 +73,14 @@ Route::middleware(['auth', 'super_admin'])->prefix('admin')->name('master.')->gr
     Route::post  ('/tenants/{tenant}/suspend',         [TenantController::class, 'suspend'])->name('tenants.suspend');
     Route::post  ('/tenants/{tenant}/activate',        [TenantController::class, 'activate'])->name('tenants.activate');
     Route::delete('/tenants/{tenant}',                 [TenantController::class, 'destroy'])->name('tenants.destroy');
+
+    // Academic Year Management (per-tenant)
+    Route::get   ('/tenants/{tenant}/academic-years',                          [AcademicYearMasterController::class, 'index'])->name('tenants.academic-years');
+    Route::get   ('/tenants/{tenant}/academic-years/create',                   [AcademicYearMasterController::class, 'create'])->name('tenants.academic-years.create');
+    Route::post  ('/tenants/{tenant}/academic-years',                          [AcademicYearMasterController::class, 'store'])->name('tenants.academic-years.store');
+    Route::post  ('/tenants/{tenant}/academic-years/set-active',               [AcademicYearMasterController::class, 'setActive'])->name('tenants.academic-years.set-active');
+    Route::post  ('/tenants/{tenant}/academic-years/duplicate',                [AcademicYearMasterController::class, 'duplicate'])->name('tenants.academic-years.duplicate');
+    Route::post  ('/tenants/{tenant}/academic-years/promote',                  [AcademicYearMasterController::class, 'promote'])->name('tenants.academic-years.promote');
 
     // School registration (superadmin-only on shared hosting)
     Route::get   ('/register-school',                  [TenantRegistrationController::class, 'showForm'])->name('register');

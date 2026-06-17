@@ -8,12 +8,11 @@
     <form method="GET" class="row g-2">
         <div class="col-md-3"><input type="month" name="month" value="{{ $month }}" class="form-control"></div>
         <div class="col-md-3">
-            <select name="class_id" class="form-select">
-                <option value="">All classes</option>
-                @foreach($classes as $c)
-                    <option value="{{ $c->id }}" @selected($classId == $c->id)>{{ $c->display_name }}</option>
-                @endforeach
-            </select>
+            @include('partials._class_section_fields', [
+                'name'     => 'class_id',
+                'classes'  => $classes,
+                'selected' => (array) (request('class_id') ?? []),
+            ])
         </div>
         <div class="col-md-2"><button class="btn btn-outline-primary w-100"><i class="fas fa-filter"></i> Apply</button></div>
     </form>

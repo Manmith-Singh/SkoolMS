@@ -14,9 +14,12 @@ class SubjectController extends Controller
     public function index(Request $request): View
     {
         $query = Subject::with('classes');
-        if ($request->filled('class_id')) {
-            $cid = $request->integer('class_id');
-            $query->whereHas('classes', fn ($q) => $q->where('classes.id', $cid));
+        $classIds = $request->input('class_id');
+        if (! empty($classIds) && is_array($classIds)) {
+            $classIds = array_values(array_filter($classIds));
+            if (! empty($classIds)) {
+                $query->whereHas('classes', fn ($q) => $q->whereIn('classes.id', $classIds));
+            }
         }
         $subjects = $query->orderBy('name')->paginate(20)->withQueryString();
         $classes  = SchoolClass::orderBy('name')->get();

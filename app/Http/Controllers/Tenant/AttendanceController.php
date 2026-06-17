@@ -19,8 +19,12 @@ class AttendanceController extends Controller
         if ($request->filled('date')) {
             $query->whereDate('date', $request->date('date'));
         }
-        if ($request->filled('class_id')) {
-            $query->where('class_id', $request->integer('class_id'));
+        $classIds = $request->input('class_id');
+        if (! empty($classIds) && is_array($classIds)) {
+            $classIds = array_filter($classIds);
+            if (! empty($classIds)) {
+                $query->whereIn('class_id', $classIds);
+            }
         }
         if ($request->filled('status')) {
             $query->where('status', $request->string('status'));
@@ -39,9 +43,13 @@ class AttendanceController extends Controller
         $selectedClass = null;
         $date = request('date', today()->toDateString());
 
-        if (request()->filled('class_id')) {
-            $selectedClass = SchoolClass::find(request()->integer('class_id'));
-            $students = Student::where('class_id', $selectedClass?->id)->orderBy('roll_no')->orderBy('first_name')->get();
+        $classIds = request()->input('class_id');
+        if (! empty($classIds) && is_array($classIds)) {
+            $classIds = array_filter($classIds);
+            if (! empty($classIds)) {
+                $selectedClass = SchoolClass::find((int) $classIds[0]);
+                $students = Student::whereIn('class_id', $classIds)->orderBy('roll_no')->orderBy('first_name')->get();
+            }
         }
 
         return view('attendance.mark', compact('classes', 'students', 'selectedClass', 'date'));
@@ -67,7 +75,7 @@ class AttendanceController extends Controller
         }
 
         return redirect()
-            ->route('attendance.index', ['date' => $data['date'], 'class_id' => $data['class_id']])
+            ->route('attendance.index', ['date' => $data['date'], 'class_id' => [$data['class_id']]])
             ->with('success', 'Attendance saved.');
     }
 }

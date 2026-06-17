@@ -7,15 +7,22 @@
 <div class="card mb-3">
     <div class="card-body">
         <form method="GET" class="row g-2">
-            <div class="col-md-4">
+            <div class="col-md-3">
+                @include('partials._class_section_fields', [
+                    'name'     => 'class_id',
+                    'classes'  => $classes,
+                    'selected' => (array) (request('class_id') ?? []),
+                ])
+            </div>
+            <div class="col-md-3">
                 <select name="exam_id" class="form-select">
                     <option value="">All exams</option>
                     @foreach($exams as $e)
-                        <option value="{{ $e->id }}" @selected(request('exam_id') == $e->id)>{{ $e->name }} — {{ $e->date->format('d M Y') }}</option>
+                        <option value="{{ $e->id }}" @selected(request('exam_id') == $e->id)>{{ $e->name }} — {{ $e->from_date?->format('d M Y') ?? '' }}</option>
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <select name="student_id" class="form-select">
                     <option value="">All students</option>
                     @foreach($students as $s)
@@ -23,7 +30,7 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <button class="btn btn-outline-primary w-100"><i class="fas fa-filter"></i> Filter</button>
             </div>
         </form>
@@ -47,7 +54,13 @@
                             —
                         @endif
                     </td>
-                    <td>{{ $r->exam->subject->name ?? '—' }}</td>
+                    <td>
+                        @if($r->exam->subjects->isNotEmpty())
+                            @foreach($r->exam->subjects as $s)<span class="badge bg-info me-1">{{ $s->name }}</span>@endforeach
+                        @else
+                            —
+                        @endif
+                    </td>
                     <td>{{ $r->student->full_name ?? '—' }}</td>
                     <td>{{ $r->marks_obtained }} / {{ $r->exam->max_marks }}</td>
                     <td>{{ $r->percentage() }}</td>

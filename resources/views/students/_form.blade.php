@@ -33,13 +33,13 @@
         </select>
     </div>
     <div class="col-md-3">
-        <label class="form-label">Class</label>
-        <select name="class_id" class="form-select">
-            <option value="">—</option>
-            @foreach($classes as $c)
-                <option value="{{ $c->id }}" @selected(old('class_id', $student?->class_id) == $c->id)>{{ $c->display_name }}</option>
-            @endforeach
-        </select>
+        @include('partials._class_section_fields', [
+            'name'     => 'class_id',
+            'classes'  => $classes,
+            'selected' => old('class_id') !== null
+                ? (array) old('class_id')
+                : ($student?->class_id ? [$student->class_id] : []),
+        ])
     </div>
     <div class="col-md-3">
         <label class="form-label">Admission date</label>

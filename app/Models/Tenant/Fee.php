@@ -2,6 +2,7 @@
 
 namespace App\Models\Tenant;
 
+use App\Models\Tenant\Scopes\AcademicYearScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,7 +13,7 @@ class Fee extends Model
 
     protected $fillable = [
         'student_id', 'category_id', 'amount', 'paid_amount',
-        'due_date', 'status', 'notes',
+        'due_date', 'status', 'notes', 'academic_year_id',
     ];
 
     protected $casts = [
@@ -20,6 +21,16 @@ class Fee extends Model
         'paid_amount' => 'decimal:2',
         'due_date' => 'date',
     ];
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new AcademicYearScope);
+    }
+
+    public function academicYear(): BelongsTo
+    {
+        return $this->belongsTo(AcademicYear::class, 'academic_year_id');
+    }
 
     public function student(): BelongsTo
     {

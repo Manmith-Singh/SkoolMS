@@ -7,13 +7,12 @@
 <div class="card mb-3"><div class="card-body">
     <form method="GET" class="row g-2 align-items-end">
         <div class="col-md-4">
-            <label class="form-label small">Class</label>
-            <select name="class_id" class="form-select">
-                <option value="">—</option>
-                @foreach($classes as $c)
-                    <option value="{{ $c->id }}" @selected(($selectedClass?->id ?? null) == $c->id)>{{ $c->display_name }}</option>
-                @endforeach
-            </select>
+            @include('partials._class_section_fields', [
+                'name'       => 'class_id',
+                'classes'    => $classes,
+                'selected'   => (array) (request('class_id') ?? []),
+                'hideLabels' => true,
+            ])
         </div>
         <div class="col-md-3">
             <label class="form-label small">Date</label>
@@ -33,7 +32,7 @@
 
     <div class="card">
         <div class="card-header bg-white d-flex justify-content-between">
-            <strong>{{ $selectedClass->display_name }} — {{ \Carbon\Carbon::parse($date)->format('d M Y') }}</strong>
+            <strong>{{ $selectedClass->display_name }}{{ count(request('class_id', [])) > 1 ? ' (+' . (count(request('class_id', [])) - 1) . ' more)' : '' }} — {{ \Carbon\Carbon::parse($date)->format('d M Y') }}</strong>
             <div>
                 <button type="button" class="btn btn-sm btn-outline-success" onclick="setAll('present')">All present</button>
                 <button type="button" class="btn btn-sm btn-outline-danger" onclick="setAll('absent')">All absent</button>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tenant;
 use App\Http\Controllers\Controller;
 use App\Models\Tenant\Exam;
 use App\Models\Tenant\Result;
+use App\Models\Tenant\SchoolClass;
 use App\Models\Tenant\Student;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class ResultController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = Result::with(['exam.classes', 'exam.subject', 'student']);
+        $query = Result::with(['exam.classes', 'exam.subjects', 'student']);
 
         if ($request->filled('exam_id')) {
             $query->where('exam_id', $request->integer('exam_id'));
@@ -22,17 +23,25 @@ class ResultController extends Controller
         if ($request->filled('student_id')) {
             $query->where('student_id', $request->integer('student_id'));
         }
+        $classIds = $request->input('class_id');
+        if (! empty($classIds) && is_array($classIds)) {
+            $classIds = array_values(array_filter($classIds));
+            if (! empty($classIds)) {
+                $query->whereHas('student', fn ($q) => $q->whereIn('class_id', $classIds));
+            }
+        }
 
         $results = $query->orderByDesc('id')->paginate(25)->withQueryString();
-        $exams   = Exam::orderByDesc('date')->limit(50)->get();
+        $exams   = Exam::orderByDesc('from_date')->limit(50)->get();
         $students = Student::orderBy('first_name')->limit(200)->get();
+        $classes = SchoolClass::orderBy('name')->get();
 
-        return view('results.index', compact('results', 'exams', 'students'));
+        return view('results.index', compact('results', 'exams', 'students', 'classes'));
     }
 
     public function edit(Exam $exam): View
     {
-        $exam->load(['classes', 'subject', 'results.student']);
+        $exam->load(['classes', 'subjects', 'results.student']);
         return view('results.edit', compact('exam'));
     }
 
