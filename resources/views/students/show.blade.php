@@ -33,6 +33,11 @@
             <table class="table table-sm mb-0">
                 <tr><th>Name</th><td>{{ $student->guardian_name ?? '—' }}</td></tr>
                 <tr><th>Phone</th><td>{{ $student->guardian_phone ?? '—' }}</td></tr>
+                <tr><th>Father</th><td>{{ $student->father_name ?? '—' }}</td></tr>
+                <tr><th>Mother</th><td>{{ $student->mother_name ?? '—' }}</td></tr>
+                <tr><th>PEN ID</th><td>{{ $student->pen_id ?? '—' }}</td></tr>
+                <tr><th>Caste</th><td>{{ $student->caste ?? '—' }}</td></tr>
+                <tr><th>Aadhaar</th><td>{{ $student->aadhaar_number ?? '—' }}</td></tr>
             </table>
         </div>
     </div>

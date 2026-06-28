@@ -63,6 +63,41 @@
         <label class="form-label">Guardian phone</label>
         <input type="text" name="guardian_phone" value="{{ $val('guardian_phone') }}" class="form-control">
     </div>
+    <div class="col-md-4">
+        <label class="form-label">Father name</label>
+        <input type="text" name="father_name" value="{{ $val('father_name') }}" class="form-control">
+    </div>
+
+    <div class="col-md-4">
+        <label class="form-label">Mother name</label>
+        <input type="text" name="mother_name" value="{{ $val('mother_name') }}" class="form-control">
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">PEN ID</label>
+        <input type="text" name="pen_id" value="{{ $val('pen_id') }}" class="form-control">
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Caste</label>
+        <select name="caste" class="form-select">
+            <option value="">—</option>
+            @foreach(App\Models\Tenant\Student::CASTES as $c)
+                <option value="{{ $c }}" @selected($val('caste') === $c)>{{ $c }}</option>
+            @endforeach
+        </select>
+    </div>
+
+    <div class="col-md-4">
+        <label class="form-label">Aadhaar number</label>
+        <input type="text" name="aadhaar_number" value="{{ $val('aadhaar_number') }}" class="form-control" maxlength="12" placeholder="12-digit">
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Status</label>
+        <select name="status" class="form-select">
+            @foreach(['active','inactive','drop'] as $s)
+                <option value="{{ $s }}" @selected($val('status', 'active') === $s)>{{ ucfirst($s) }}</option>
+            @endforeach
+        </select>
+    </div>
     <div class="col-md-8">
         <label class="form-label">Address</label>
         <input type="text" name="address" value="{{ $val('address') }}" class="form-control">

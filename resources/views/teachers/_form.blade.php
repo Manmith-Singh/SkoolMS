@@ -47,6 +47,14 @@
         <input type="number" step="0.01" name="salary" value="{{ $val('salary') }}" class="form-control">
     </div>
     <div class="col-md-4">
+        <label class="form-label">Status</label>
+        <select name="status" class="form-select">
+            @foreach(['working','resigned','transfer'] as $s)
+                <option value="{{ $s }}" @selected($val('status', 'working') === $s)>{{ ucfirst($s) }}</option>
+            @endforeach
+        </select>
+    </div>
+    <div class="col-md-4">
         <label class="form-label">Class Teacher</label>
         <select name="class_teacher_id" class="form-select">
             <option value="">—</option>

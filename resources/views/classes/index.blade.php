@@ -10,16 +10,11 @@
     <div class="card-body p-0">
         <table class="table datatable mb-0">
             <thead>
-                <tr><th>Name</th><th>Section</th><th>Capacity</th><th>Students</th><th>Description</th><th class="no-sort">Actions</th></tr>
+                <tr><th class="no-sort">Actions</th><th>Name</th><th>Section</th><th>Capacity</th><th>Students</th><th>Description</th></tr>
             </thead>
             <tbody>
                 @foreach($classes as $c)
                 <tr>
-                    <td>{{ $c->name }}</td>
-                    <td>{{ $c->section ?? '—' }}</td>
-                    <td>{{ $c->capacity }}</td>
-                    <td>{{ $c->students_count }}</td>
-                    <td>{{ Str::limit($c->description, 50) }}</td>
                     <td>
                         <a href="{{ route('classes.edit', $c) }}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
                         <form method="POST" action="{{ route('classes.destroy', $c) }}" class="d-inline" onsubmit="return confirm('Delete?')">
@@ -27,6 +22,11 @@
                             <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
                         </form>
                     </td>
+                    <td>{{ $c->name }}</td>
+                    <td>{{ $c->section ?? '—' }}</td>
+                    <td>{{ $c->capacity }}</td>
+                    <td>{{ $c->students_count }}</td>
+                    <td>{{ Str::limit($c->description, 50) }}</td>
                 </tr>
                 @endforeach
             </tbody>

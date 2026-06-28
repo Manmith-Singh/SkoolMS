@@ -71,6 +71,12 @@ class BulkImportController extends Controller
                 'phone'          => $this->val($row, 'phone'),
                 'guardian_name'  => $this->val($row, 'guardian_name'),
                 'guardian_phone' => $this->val($row, 'guardian_phone'),
+                'father_name'    => $this->val($row, 'father_name'),
+                'mother_name'    => $this->val($row, 'mother_name'),
+                'pen_id'         => $this->val($row, 'pen_id'),
+                'caste'          => $this->val($row, 'caste'),
+                'aadhaar_number' => $this->val($row, 'aadhaar_number'),
+                'status'         => $this->val($row, 'status'),
                 'address'        => $this->val($row, 'address'),
                 'admission_date' => $this->val($row, 'admission_date'),
                 'class_name'     => $this->val($row, 'class_name'),
@@ -84,6 +90,9 @@ class BulkImportController extends Controller
                 'admission_no' => ['nullable', 'string', 'max:50', 'unique:tenant.students,admission_no'],
                 'dob'          => ['nullable', 'date'],
                 'gender'       => ['nullable', 'in:male,female,other'],
+                'caste'          => ['nullable', 'string', 'in:OC,BC-A,BC-B,BC-C,BC-D,BC-E,SC,ST,OBC'],
+                'aadhaar_number' => ['nullable', 'string', 'size:12'],
+                'status'         => ['nullable', 'string', 'in:active,inactive,drop'],
                 'admission_date' => ['nullable', 'date'],
             ]);
 
@@ -115,6 +124,12 @@ class BulkImportController extends Controller
                         'phone'          => $data['phone'] ?: null,
                         'guardian_name'  => $data['guardian_name'] ?: null,
                         'guardian_phone' => $data['guardian_phone'] ?: null,
+                        'father_name'    => $data['father_name'] ?: null,
+                        'mother_name'    => $data['mother_name'] ?: null,
+                        'pen_id'         => $data['pen_id'] ?: null,
+                        'caste'          => $data['caste'] ?: null,
+                        'aadhaar_number' => $data['aadhaar_number'] ?: null,
+                        'status'         => $data['status'] ?: 'active',
                         'address'        => $data['address'] ?: null,
                         'admission_date' => $data['admission_date'] ?: null,
                         'class_id'       => $classId,
@@ -139,17 +154,21 @@ class BulkImportController extends Controller
     {
         return $this->streamXlsx('students-template.xlsx', [
             ['admission_no', 'first_name', 'last_name', 'roll_no', 'dob', 'gender',
-             'email', 'phone', 'guardian_name', 'guardian_phone', 'address',
-             'admission_date', 'class_name'],
+             'email', 'phone', 'guardian_name', 'guardian_phone',
+             'father_name', 'mother_name', 'pen_id', 'caste', 'aadhaar_number', 'status',
+             'address', 'admission_date', 'class_name'],
             ['S001', 'John',    'Doe',   '1', '2015-05-10', 'male',
-             'john.doe@example.com', '555-0100', 'Mary Doe', '555-0101', '123 Main St',
-             '2026-04-01', 'Grade 1 A'],
+             'john.doe@example.com', '555-0100', 'Mary Doe', '555-0101',
+             'Robert Doe', 'Jane Doe', 'PEN123', 'OC', '123456789012', 'active',
+             '123 Main St', '2026-04-01', 'Grade 1 A'],
             ['S002', 'Alice',   'Smith', '2', '2015-08-20', 'female',
-             'alice.smith@example.com', '555-0200', 'Bob Smith', '555-0201', '45 Oak Ave',
-             '2026-04-01', 'Grade 1 A'],
+             'alice.smith@example.com', '555-0200', 'Bob Smith', '555-0201',
+             'Tom Smith', 'Lisa Smith', '', 'BC-A', '987654321098', 'active',
+             '45 Oak Ave', '2026-04-01', 'Grade 1 A'],
             ['S003', 'Carlos',  'Lopez', '1', '2014-11-02', 'male',
-             '', '', 'Elena Lopez', '555-0301', '8 Pine Rd',
-             '2026-04-01', 'Grade 2 A'],
+             '', '', 'Elena Lopez', '555-0301',
+             '', '', '', '', '', 'active',
+             '8 Pine Rd', '2026-04-01', 'Grade 2 A'],
         ]);
     }
 
@@ -190,6 +209,7 @@ class BulkImportController extends Controller
                 'address'       => $this->val($row, 'address'),
                 'salary'        => $this->val($row, 'salary'),
                 'subject_code'  => $this->val($row, 'subject_code'),
+                'status'        => $this->val($row, 'status'),
             ];
 
             $v = Validator::make($data, [
@@ -200,6 +220,7 @@ class BulkImportController extends Controller
                 'hire_date'   => ['nullable', 'date'],
                 'gender'      => ['nullable', 'in:male,female,other'],
                 'salary'      => ['nullable', 'numeric', 'min:0'],
+                'status'      => ['nullable', 'string', 'in:working,resigned,transfer'],
             ]);
 
             if ($v->fails()) {
@@ -224,6 +245,7 @@ class BulkImportController extends Controller
                         'address'       => $data['address'] ?: null,
                         'salary'        => $data['salary'] !== null && $data['salary'] !== '' ? $data['salary'] : null,
                         'subject_id'    => $subjectId,
+                        'status'        => $data['status'] ?: 'working',
                     ]);
                 });
                 $created++;
@@ -245,13 +267,13 @@ class BulkImportController extends Controller
     {
         return $this->streamXlsx('teachers-template.xlsx', [
             ['employee_id', 'first_name', 'last_name', 'email', 'phone',
-             'qualification', 'hire_date', 'gender', 'address', 'salary', 'subject_code'],
+             'qualification', 'hire_date', 'gender', 'address', 'salary', 'status', 'subject_code'],
             ['T001', 'Jane',   'Smith',  'jane.smith@school.test',  '555-1000',
-             'MSc Mathematics', '2024-01-15', 'female', '12 Elm St', '45000', 'MTH'],
+             'MSc Mathematics', '2024-01-15', 'female', '12 Elm St', '45000', 'working', 'MTH'],
             ['T002', 'David',  'Khan',   'david.khan@school.test',   '555-1001',
-             'BEd English',    '2024-02-01', 'male',   '34 Oak St', '42000', 'ENG'],
+             'BEd English',    '2024-02-01', 'male',   '34 Oak St', '42000', 'working', 'ENG'],
             ['T003', 'Priya',  'Patel',  'priya.patel@school.test',  '555-1002',
-             'MSc Physics',    '2024-03-10', 'female', '56 Pine St', '48000', 'PHY'],
+             'MSc Physics',    '2024-03-10', 'female', '56 Pine St', '48000', 'working', 'PHY'],
         ]);
     }
 

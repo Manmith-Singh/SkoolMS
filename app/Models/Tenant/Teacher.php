@@ -13,7 +13,7 @@ class Teacher extends Model
     protected $fillable = [
         'employee_id', 'first_name', 'last_name', 'email', 'phone',
         'qualification', 'hire_date', 'gender', 'address', 'salary',
-        'subject_id', 'class_teacher_id',
+        'subject_id', 'class_teacher_id', 'status',
     ];
 
     protected $casts = [

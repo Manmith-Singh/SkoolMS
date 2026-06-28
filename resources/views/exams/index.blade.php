@@ -11,11 +11,20 @@
     <div class="card-body p-0">
         <table class="table datatable mb-0">
             <thead>
-                <tr><th>Name</th><th>Type</th><th>Class</th><th>Subjects</th><th>Period</th><th>Max</th><th>Pass</th><th class="no-sort">Actions</th></tr>
+                <tr><th class="no-sort">Actions</th><th>Name</th><th>Type</th><th>Class</th><th>Subjects</th><th>Period</th><th>Max</th><th>Pass</th></tr>
             </thead>
             <tbody>
                 @foreach($exams as $e)
                 <tr>
+                    <td>
+                        <a href="{{ route('exams.show', $e) }}" class="btn btn-sm btn-outline-info" title="View"><i class="fas fa-eye"></i></a>
+                        <a href="{{ route('results.edit', $e) }}" class="btn btn-sm btn-outline-success" title="Enter marks"><i class="fas fa-pen"></i></a>
+                        <a href="{{ route('exams.edit', $e) }}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
+                        <form method="POST" action="{{ route('exams.destroy', $e) }}" class="d-inline" onsubmit="return confirm('Delete?')">
+                            @csrf @method('DELETE')
+                            <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </td>
                     <td>{{ $e->name }}</td>
                     <td>{{ $e->examType->name ?? '—' }}</td>
                     <td>
@@ -45,15 +54,6 @@
                     </td>
                     <td>{{ $e->max_marks }}</td>
                     <td>{{ $e->pass_marks }}</td>
-                    <td>
-                        <a href="{{ route('exams.show', $e) }}" class="btn btn-sm btn-outline-info" title="View"><i class="fas fa-eye"></i></a>
-                        <a href="{{ route('results.edit', $e) }}" class="btn btn-sm btn-outline-success" title="Enter marks"><i class="fas fa-pen"></i></a>
-                        <a href="{{ route('exams.edit', $e) }}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
-                        <form method="POST" action="{{ route('exams.destroy', $e) }}" class="d-inline" onsubmit="return confirm('Delete?')">
-                            @csrf @method('DELETE')
-                            <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
-                        </form>
-                    </td>
                 </tr>
                 @endforeach
             </tbody>

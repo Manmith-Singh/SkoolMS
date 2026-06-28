@@ -21,6 +21,7 @@
         <tr><th>Class Teacher</th><td>{{ $teacher->classTeacher->display_name ?? '—' }}</td></tr>
         <tr><th>Qualification</th><td>{{ $teacher->qualification ?? '—' }}</td></tr>
         <tr><th>Hire date</th><td>{{ optional($teacher->hire_date)->format('d M Y') ?? '—' }}</td></tr>
+        <tr><th>Status</th><td>{!! $teacher->status ? '<span class="badge bg-'.($teacher->status === 'working' ? 'success' : ($teacher->status === 'resigned' ? 'secondary' : 'warning')).'">'.ucfirst($teacher->status).'</span>' : '—' !!}</td></tr>
         <tr><th>Salary</th><td>{{ number_format($teacher->salary ?? 0, 2) }}</td></tr>
         <tr><th>Address</th><td>{{ $teacher->address ?? '—' }}</td></tr>
     </table>

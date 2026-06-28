@@ -58,6 +58,7 @@
                     <li><code>gender</code> <em class="text-muted">(male / female / other)</em></li>
                     <li><code>address</code></li>
                     <li><code>salary</code> <em class="text-muted">(number)</em></li>
+                    <li><code>status</code> <em class="text-muted">(working / resigned / transfer)</em></li>
                     <li><code>subject_code</code> <em class="text-muted">(must match an existing subject code)</em></li>
                 </ul>
                 <a href="{{ route('teachers.sample') }}" class="btn btn-outline-info btn-sm">

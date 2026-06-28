@@ -7,7 +7,9 @@ use App\Models\Tenant\ExamType;
 use App\Models\Tenant\FeeCategory;
 use App\Models\Tenant\SchoolClass;
 use App\Models\Tenant\Subject;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AcademicYearDuplicationService
 {
@@ -42,6 +44,16 @@ class AcademicYearDuplicationService
             ->get();
 
         foreach ($oldClasses as $class) {
+            $existing = SchoolClass::withoutGlobalScopes()
+                ->where('academic_year_id', $toYear->id)
+                ->where('name', $class->name)
+                ->where('section', $class->section)
+                ->first();
+            if ($existing) {
+                $map[$class->id] = $existing->id;
+                continue;
+            }
+
             $new = $class->replicate(['id', 'created_at', 'updated_at']);
             $new->academic_year_id = $toYear->id;
             $new->save();
@@ -61,13 +73,22 @@ class AcademicYearDuplicationService
         foreach ($oldSubjects as $subject) {
             $new = $subject->replicate(['id', 'created_at', 'updated_at']);
             $new->academic_year_id = $toYear->id;
-            $new->save();
+            try {
+                $new->save();
+            } catch (QueryException $e) {
+                if ($e->getCode() !== '23000') throw $e;
+                $existing = Subject::withoutGlobalScopes()
+                    ->where('academic_year_id', $toYear->id)
+                    ->where('name', $subject->name)
+                    ->first();
+                if ($existing) $new = $existing;
+            }
 
             // Sync to new classes
             $oldClassIds = $subject->classes()->pluck('classes.id')->toArray();
             $newClassIds = array_values(array_intersect_key($classIdMap, array_flip($oldClassIds)));
             if (! empty($newClassIds)) {
-                $new->classes()->sync($newClassIds);
+                $new->classes()->syncWithoutDetaching($newClassIds);
             }
 
             $count++;
@@ -84,6 +105,12 @@ class AcademicYearDuplicationService
             ->get();
 
         foreach ($oldCategories as $cat) {
+            $existing = FeeCategory::withoutGlobalScopes()
+                ->where('academic_year_id', $toYear->id)
+                ->where('name', $cat->name)
+                ->first();
+            if ($existing) { $count++; continue; }
+
             $new = $cat->replicate(['id', 'created_at', 'updated_at']);
             $new->academic_year_id = $toYear->id;
             $new->save();
@@ -101,6 +128,12 @@ class AcademicYearDuplicationService
             ->get();
 
         foreach ($oldTypes as $type) {
+            $existing = ExamType::withoutGlobalScopes()
+                ->where('academic_year_id', $toYear->id)
+                ->where('name', $type->name)
+                ->first();
+            if ($existing) { $count++; continue; }
+
             $new = $type->replicate(['id', 'created_at', 'updated_at']);
             $new->academic_year_id = $toYear->id;
             $new->save();

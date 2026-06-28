@@ -103,6 +103,7 @@ class TeacherController extends Controller
             'subject_id'      => ['nullable', 'array'],
             'subject_id.*'    => ['required', 'exists:tenant.subjects,id'],
             'class_teacher_id'=> ['nullable', 'exists:tenant.classes,id'],
+            'status'          => ['nullable', 'string', 'in:working,resigned,transfer'],
         ]);
     }
 }

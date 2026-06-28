@@ -45,24 +45,21 @@
         <table class="table datatable mb-0">
             <thead>
                 <tr>
+                    <th class="no-sort">Actions</th>
                     <th>Adm No</th>
                     <th>Name</th>
                     <th>Class</th>
                     <th>Roll</th>
-                    <th>Guardian</th>
+                    <th>Father</th>
+                    <th>Mother</th>
+                    <th>PEN ID</th>
+                    <th>Caste</th>
                     <th>Phone</th>
-                    <th class="no-sort">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($students as $s)
                 <tr>
-                    <td><code>{{ $s->admission_no }}</code></td>
-                    <td><a href="{{ route('students.show', $s) }}">{{ $s->full_name }}</a></td>
-                    <td>{{ $s->schoolClass->display_name ?? '—' }}</td>
-                    <td>{{ $s->roll_no ?? '—' }}</td>
-                    <td>{{ $s->guardian_name ?? '—' }}</td>
-                    <td>{{ $s->guardian_phone ?? $s->phone ?? '—' }}</td>
                     <td>
                         <a href="{{ route('students.edit', $s) }}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
                         <form method="POST" action="{{ route('students.destroy', $s) }}" class="d-inline" onsubmit="return confirm('Delete this student?')">
@@ -70,11 +67,20 @@
                             <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
                         </form>
                     </td>
+                    <td><code>{{ $s->admission_no }}</code></td>
+                    <td><a href="{{ route('students.show', $s) }}">{{ $s->full_name }}</a></td>
+                    <td>{{ $s->schoolClass->display_name ?? '—' }}</td>
+                    <td>{{ $s->roll_no ?? '—' }}</td>
+                    <td>{{ $s->father_name ?? '—' }}</td>
+                    <td>{{ $s->mother_name ?? '—' }}</td>
+                    <td>{{ $s->pen_id ?? '—' }}</td>
+                    <td>{{ $s->caste ?? '—' }}</td>
+                    <td>{{ $s->guardian_phone ?? $s->phone ?? '—' }}</td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
-    <div class="card-footer">{{ $students->links() }}</div>
+
 </div>
 @endsection

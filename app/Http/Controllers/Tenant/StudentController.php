@@ -27,7 +27,7 @@ class StudentController extends Controller
             });
         }
 
-        $students = $query->orderBy('admission_no')->paginate(20)->withQueryString();
+        $students = $query->orderBy('admission_no')->get();
         $classes  = SchoolClass::orderBy('name')->get();
 
         return view('students.index', compact('students', 'classes'));
@@ -93,6 +93,12 @@ class StudentController extends Controller
             'address'        => ['nullable', 'string'],
             'guardian_name'  => ['nullable', 'string', 'max:191'],
             'guardian_phone' => ['nullable', 'string', 'max:30'],
+            'father_name'    => ['nullable', 'string', 'max:191'],
+            'mother_name'    => ['nullable', 'string', 'max:191'],
+            'pen_id'         => ['nullable', 'string', 'max:50'],
+            'caste'          => ['nullable', 'string', 'in:' . implode(',', \App\Models\Tenant\Student::CASTES)],
+            'aadhaar_number' => ['nullable', 'string', 'size:12'],
+            'status'         => ['nullable', 'string', 'in:active,inactive,drop'],
             'admission_date' => ['nullable', 'date'],
             'class_id'       => ['nullable', 'array'],
             'class_id.*'     => ['nullable', 'exists:tenant.classes,id'],

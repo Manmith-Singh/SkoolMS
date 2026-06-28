@@ -28,11 +28,18 @@
     <div class="card-body p-0">
         <table class="table datatable mb-0">
             <thead>
-                <tr><th>Name</th><th>Code</th><th>Class</th><th>Description</th><th class="no-sort">Actions</th></tr>
+                <tr><th class="no-sort">Actions</th><th>Name</th><th>Code</th><th>Class</th><th>Description</th></tr>
             </thead>
             <tbody>
                 @foreach($subjects as $s)
                 <tr>
+                    <td>
+                        <a href="{{ route('subjects.edit', $s) }}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
+                        <form method="POST" action="{{ route('subjects.destroy', $s) }}" class="d-inline" onsubmit="return confirm('Delete?')">
+                            @csrf @method('DELETE')
+                            <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </td>
                     <td>{{ $s->name }}</td>
                     <td><code>{{ $s->code ?? '—' }}</code></td>
                     <td>
@@ -45,13 +52,6 @@
                         @endif
                     </td>
                     <td>{{ Str::limit($s->description, 60) }}</td>
-                    <td>
-                        <a href="{{ route('subjects.edit', $s) }}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
-                        <form method="POST" action="{{ route('subjects.destroy', $s) }}" class="d-inline" onsubmit="return confirm('Delete?')">
-                            @csrf @method('DELETE')
-                            <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
-                        </form>
-                    </td>
                 </tr>
                 @endforeach
             </tbody>

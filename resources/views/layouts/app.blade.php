@@ -226,6 +226,7 @@
         $(function() {
             $('table.datatable').DataTable({
                 pageLength: 25,
+                lengthMenu: [10, 25, 50, 100],
                 order: [],
                 language: { search: '', searchPlaceholder: 'Search...' }
             });

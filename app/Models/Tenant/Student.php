@@ -11,11 +11,14 @@ class Student extends Model
 {
     protected $connection = 'tenant';
 
+    public const CASTES = ['OC', 'BC-A', 'BC-B', 'BC-C', 'BC-D', 'BC-E', 'SC', 'ST', 'OBC'];
+
     protected $fillable = [
         'admission_no', 'first_name', 'last_name', 'roll_no',
         'dob', 'gender', 'email', 'phone', 'address',
         'guardian_name', 'guardian_phone', 'admission_date',
         'class_id', 'photo_path',
+        'father_name', 'mother_name', 'pen_id', 'caste', 'aadhaar_number', 'status',
     ];
 
     protected $casts = [

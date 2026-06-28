@@ -32,18 +32,26 @@
         <table class="table datatable mb-0">
             <thead>
                 <tr>
+                    <th class="no-sort">Actions</th>
                     <th>Emp ID</th>
                     <th>Name</th>
                     <th>Subject</th>
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Qualification</th>
-                    <th class="no-sort">Actions</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($teachers as $t)
                 <tr>
+                    <td>
+                        <a href="{{ route('teachers.edit', $t) }}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
+                        <form method="POST" action="{{ route('teachers.destroy', $t) }}" class="d-inline" onsubmit="return confirm('Delete this teacher?')">
+                            @csrf @method('DELETE')
+                            <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </td>
                     <td><code>{{ $t->employee_id }}</code></td>
                     <td>{{ $t->full_name }}</td>
                     <td>
@@ -56,18 +64,12 @@
                     <td>{{ $t->email }}</td>
                     <td>{{ $t->phone ?? '—' }}</td>
                     <td>{{ $t->qualification ?? '—' }}</td>
-                    <td>
-                        <a href="{{ route('teachers.edit', $t) }}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
-                        <form method="POST" action="{{ route('teachers.destroy', $t) }}" class="d-inline" onsubmit="return confirm('Delete this teacher?')">
-                            @csrf @method('DELETE')
-                            <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
-                        </form>
-                    </td>
+                    <td><span class="badge bg-{{ $t->status === 'working' ? 'success' : ($t->status === 'resigned' ? 'secondary' : 'warning') }}">{{ $t->status ?? 'working' }}</span></td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
-    <div class="card-footer">{{ $teachers->links() }}</div>
+
 </div>
 @endsection

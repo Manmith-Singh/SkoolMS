@@ -56,6 +56,11 @@
                     <li><code>gender</code> <em class="text-muted">(male / female / other)</em></li>
                     <li><code>email</code>, <code>phone</code></li>
                     <li><code>guardian_name</code>, <code>guardian_phone</code></li>
+                    <li><code>father_name</code>, <code>mother_name</code></li>
+                    <li><code>pen_id</code> <em class="text-muted">(PEN ID)</em></li>
+                    <li><code>caste</code> <em class="text-muted">(OC / BC-A / BC-B / BC-C / BC-D / BC-E / SC / ST / OBC)</em></li>
+                    <li><code>aadhaar_number</code> <em class="text-muted">(12-digit)</em></li>
+                    <li><code>status</code> <em class="text-muted">(active / inactive / drop)</em></li>
                     <li><code>address</code></li>
                     <li><code>admission_date</code> <em class="text-muted">(YYYY-MM-DD)</em></li>
                     <li><code>class_name</code> <em class="text-muted">(e.g. "Grade 1 A" — must match an existing class)</em></li>
