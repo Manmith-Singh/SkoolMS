@@ -3,12 +3,14 @@
 namespace App\Models\Tenant;
 
 use App\Models\Tenant\Scopes\AcademicYearScope;
+use App\Models\Tenant\Traits\HasAcademicYear;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SchoolClass extends Model
 {
+    use HasAcademicYear;
     protected $connection = 'tenant';
 
     protected $table = 'classes';
