@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Master\Tenant;
 use App\Models\Master\User;
+use App\Models\Tenant\Scopes\AcademicYearScope;
 use App\Services\TenantDatabaseManager;
 use Database\Seeders\Wipe\TenantBaselineSeeder;
 use Illuminate\Console\Command;
@@ -57,6 +58,10 @@ class WipeDataCommand extends Command
         if ($tenants->isEmpty()) {
             $this->warn('No active tenants found.');
         } else {
+            $this->info('→ Running pending tenant migrations first...');
+            Artisan::call('tenant:migrate');
+            $this->line(Artisan::output());
+
             foreach ($tenants as $tenant) {
                 $this->info("→ Tenant: {$tenant->name} ({$tenant->subdomain})");
                 $manager->switchConnection($tenant);
@@ -91,10 +96,20 @@ class WipeDataCommand extends Command
     {
         DB::connection('tenant')->statement('SET FOREIGN_KEY_CHECKS=0');
 
-        foreach (self::TENANT_TABLES as $table) {
+        $existing = DB::connection('tenant')->table('information_schema.tables')
+            ->where('table_schema', DB::connection('tenant')->getDatabaseName())
+            ->whereNotIn('table_name', ['migrations'])
+            ->pluck('table_name')
+            ->all();
+
+        $tables = array_intersect(self::TENANT_TABLES, $existing);
+        $skipped = array_diff(self::TENANT_TABLES, $existing);
+
+        foreach ($tables as $table) {
             DB::connection('tenant')->table($table)->truncate();
         }
-        $this->line('  Truncated all ' . count(self::TENANT_TABLES) . ' tenant tables.');
+
+        $this->line('  Truncated ' . count($tables) . ' table(s).' . ($skipped ? ' Skipped (missing): ' . implode(', ', $skipped) : ''));
 
         DB::connection('tenant')->statement('SET FOREIGN_KEY_CHECKS=1');
     }
@@ -102,10 +117,15 @@ class WipeDataCommand extends Command
     private function seedTenant(): void
     {
         $this->line('  Seeding baseline data...');
+
+        AcademicYearScope::disable();
+
         Artisan::call('db:seed', [
             '--class' => TenantBaselineSeeder::class,
             '--database' => 'tenant',
             '--force' => true,
         ]);
+
+        AcademicYearScope::enable();
     }
 }
