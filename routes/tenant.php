@@ -6,14 +6,21 @@ use App\Http\Controllers\Tenant\ClassController;
 use App\Http\Controllers\Tenant\DashboardController;
 use App\Http\Controllers\Tenant\ExamController;
 use App\Http\Controllers\Tenant\ExamTypeController;
+use App\Http\Controllers\Tenant\ExpenditureTransactionController;
+use App\Http\Controllers\Tenant\ExpenditureTypeController;
 use App\Http\Controllers\Tenant\FeeCategoryController;
 use App\Http\Controllers\Tenant\FeeController;
 use App\Http\Controllers\Tenant\FeePaymentController;
+use App\Http\Controllers\Tenant\IncomeTransactionController;
+use App\Http\Controllers\Tenant\IncomeTypeController;
 use App\Http\Controllers\Tenant\ReportController;
 use App\Http\Controllers\Tenant\ResultController;
+use App\Http\Controllers\Tenant\StaffAttendanceController;
 use App\Http\Controllers\Tenant\StudentController;
 use App\Http\Controllers\Tenant\SubjectController;
 use App\Http\Controllers\Tenant\TeacherController;
+use App\Http\Controllers\Tenant\PayrollController;
+use App\Http\Controllers\Tenant\TeacherIncrementController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -88,6 +95,7 @@ Route::middleware('auth')->group(function () {
     // otherwise Laravel matches `fees/payments` against `fees/{fee}` first
     // and 404s when the implicit model binding can't find a row).
     Route::get('fees/payments', [FeePaymentController::class, 'index'])->name('fees.payments.index');
+    Route::get('fees/payments/search-student', [FeePaymentController::class, 'searchStudent'])->name('fees.payments.search-student');
     Route::get('fees/payments/create', [FeePaymentController::class, 'create'])->name('fees.payments.create');
     Route::post('fees/payments', [FeePaymentController::class, 'store'])->name('fees.payments.store');
     Route::get('fees/payments/{payment}/receipt', [FeePaymentController::class, 'receipt'])->name('fees.payments.receipt');
@@ -100,6 +108,32 @@ Route::middleware('auth')->group(function () {
     Route::get('fees/{fee}', [FeeController::class, 'show'])->name('fees.show');
     Route::delete('fees/{fee}', [FeeController::class, 'destroy'])->name('fees.destroy');
 
+    // Income types
+    Route::resource('income-types', IncomeTypeController::class)->except('show');
+
+    // Income transactions
+    Route::resource('income', IncomeTransactionController::class)->parameters(['income' => 'income'])->except('show');
+
+    // Expenditure types
+    Route::resource('expenditure-types', ExpenditureTypeController::class)->except('show');
+
+    // Expenditure transactions
+    Route::resource('expenditure', ExpenditureTransactionController::class)->parameters(['expenditure' => 'expenditure'])->except('show');
+
+    // Staff attendance
+    Route::get('staff-attendance', [StaffAttendanceController::class, 'index'])->name('staff-attendance.index');
+    Route::get('staff-attendance/mark', [StaffAttendanceController::class, 'mark'])->name('staff-attendance.mark');
+    Route::post('staff-attendance', [StaffAttendanceController::class, 'store'])->name('staff-attendance.store');
+
+    // Payroll
+    Route::resource('payroll', PayrollController::class)->parameters(['payroll' => 'payroll']);
+    Route::post('payroll/bulk-generate', [PayrollController::class, 'bulkGenerate'])->name('payroll.bulk-generate');
+    Route::post('payroll/bulk-pay', [PayrollController::class, 'bulkPay'])->name('payroll.bulk-pay');
+
+    // Teacher increments
+    Route::post('teacher-increments', [TeacherIncrementController::class, 'store'])->name('teacher-increments.store');
+    Route::delete('teacher-increments/{teacherIncrement}', [TeacherIncrementController::class, 'destroy'])->name('teacher-increments.destroy');
+
     // Academic Year (year selector)
     Route::post('academic-years/switch', [App\Http\Controllers\Tenant\AcademicYearController::class, 'switch'])->name('academic-years.switch');
 
@@ -108,4 +142,7 @@ Route::middleware('auth')->group(function () {
     Route::get('reports/results', [ReportController::class, 'results'])->name('reports.results');
     Route::get('reports/attendance', [ReportController::class, 'attendance'])->name('reports.attendance');
     Route::get('reports/fees', [ReportController::class, 'fees'])->name('reports.fees');
+    Route::get('reports/income', [ReportController::class, 'income'])->name('reports.income');
+    Route::get('reports/expenditure', [ReportController::class, 'expenditure'])->name('reports.expenditure');
+    Route::get('reports/profit-loss', [ReportController::class, 'profitLoss'])->name('reports.profit-loss');
 });

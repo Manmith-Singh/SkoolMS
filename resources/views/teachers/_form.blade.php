@@ -46,6 +46,51 @@
         <label class="form-label">Salary</label>
         <input type="number" step="0.01" name="salary" value="{{ $val('salary') }}" class="form-control">
     </div>
+    <div class="col-12"><hr><h6 class="text-muted">Payroll Details</h6></div>
+    <div class="col-md-3">
+        <label class="form-label">PF Number</label>
+        <input type="text" name="pf_number" value="{{ $val('pf_number') }}" class="form-control">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">ESI Number</label>
+        <input type="text" name="esi_number" value="{{ $val('esi_number') }}" class="form-control">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">UAN Number</label>
+        <input type="text" name="uan_number" value="{{ $val('uan_number') }}" class="form-control">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Bank Account</label>
+        <input type="text" name="bank_account" value="{{ $val('bank_account') }}" class="form-control">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">IFSC Code</label>
+        <input type="text" name="ifsc_code" value="{{ $val('ifsc_code') }}" class="form-control">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Basic Pay</label>
+        <input type="number" step="0.01" name="basic_pay" value="{{ $val('basic_pay') }}" class="form-control">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">HRA</label>
+        <input type="number" step="0.01" name="hra" value="{{ $val('hra') }}" class="form-control">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">DA</label>
+        <input type="number" step="0.01" name="da" value="{{ $val('da') }}" class="form-control">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Conveyance</label>
+        <input type="number" step="0.01" name="conveyance" value="{{ $val('conveyance') }}" class="form-control">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Medical Allowance</label>
+        <input type="number" step="0.01" name="medical_allowance" value="{{ $val('medical_allowance') }}" class="form-control">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Other Allowances</label>
+        <input type="number" step="0.01" name="other_allowances" value="{{ $val('other_allowances') }}" class="form-control">
+    </div>
     <div class="col-md-4">
         <label class="form-label">Status</label>
         <select name="status" class="form-select">

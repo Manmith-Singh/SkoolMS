@@ -25,6 +25,16 @@ class AcademicYearScope implements Scope
         if (! static::$enabled) return;
 
         $yearId = session('current_academic_year_id');
+
+        if (! $yearId) {
+            $year = \App\Models\Tenant\AcademicYear::withoutGlobalScopes()
+                ->where('is_active', true)->first();
+            if ($year) {
+                $yearId = $year->id;
+                session(['current_academic_year_id' => $yearId]);
+            }
+        }
+
         if ($yearId) {
             $builder->where('academic_year_id', $yearId);
         }

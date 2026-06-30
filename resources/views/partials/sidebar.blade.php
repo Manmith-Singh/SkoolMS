@@ -28,8 +28,8 @@
 
     $inAcademics = request()->routeIs('classes.*') || request()->routeIs('subjects.*') || request()->routeIs('exams.*') || request()->routeIs('exam-types.*') || request()->routeIs('results.*') || request()->routeIs('attendance.*');
     $inExams = request()->routeIs('exams.*') || request()->routeIs('exam-types.*') || request()->routeIs('results.*');
-    $inPeople = request()->routeIs('students.*') || request()->routeIs('teachers.*');
-    $inFinance = request()->routeIs('fees.*');
+    $inPeople = request()->routeIs('students.*') || request()->routeIs('teachers.*') || request()->routeIs('staff-attendance.*');
+    $inFinance = request()->routeIs('fees.*') || request()->routeIs('income.*') || request()->routeIs('expenditure.*') || request()->routeIs('income-types.*') || request()->routeIs('expenditure-types.*') || request()->routeIs('payroll.*');
     $inReports = request()->routeIs('reports.*');
 
     $inOps = request()->routeIs('master.tenants.*') || request()->routeIs('master.users.*');
@@ -213,6 +213,11 @@
                     <i class="fas fa-user-tie"></i><span>Teachers</span>
                 </a>
                 @endif
+                @if($canAccess(['staff-attendance.*']))
+                <a href="{{ route('staff-attendance.index') }}" class="nav-link {{ request()->routeIs('staff-attendance.*') ? 'active' : '' }}">
+                    <i class="fas fa-calendar-check"></i><span>Staff Attendance</span>
+                </a>
+                @endif
             </div>
         </div>
         @endif
@@ -239,11 +244,36 @@
                     <i class="fas fa-tags"></i><span>Fee Categories</span>
                 </a>
                 @endif
+                @if($canAccess(['income.*']))
+                <a href="{{ route('income.index') }}" class="nav-link {{ request()->routeIs('income.*') ? 'active' : '' }}">
+                    <i class="fas fa-circle-plus"></i><span>Income</span>
+                </a>
+                @endif
+                @if($canAccess(['expenditure.*']))
+                <a href="{{ route('expenditure.index') }}" class="nav-link {{ request()->routeIs('expenditure.*') ? 'active' : '' }}">
+                    <i class="fas fa-circle-minus"></i><span>Expenditure</span>
+                </a>
+                @endif
+                @if($canAccess(['payroll.*']))
+                <a href="{{ route('payroll.index') }}" class="nav-link {{ request()->routeIs('payroll.*') ? 'active' : '' }}">
+                    <i class="fas fa-money-check-dollar"></i><span>Payroll</span>
+                </a>
+                @endif
+                @if($canAccess(['income-types.*']))
+                <a href="{{ route('income-types.index') }}" class="nav-link {{ request()->routeIs('income-types.*') ? 'active' : '' }}">
+                    <i class="fas fa-list"></i><span>Income Types</span>
+                </a>
+                @endif
+                @if($canAccess(['expenditure-types.*']))
+                <a href="{{ route('expenditure-types.index') }}" class="nav-link {{ request()->routeIs('expenditure-types.*') ? 'active' : '' }}">
+                    <i class="fas fa-list"></i><span>Expenditure Types</span>
+                </a>
+                @endif
             </div>
         </div>
         @endif
 
-        @if($canAccess(['reports.results', 'reports.attendance', 'reports.fees']))
+        @if($canAccess(['reports.results', 'reports.attendance', 'reports.fees', 'reports.income', 'reports.expenditure', 'reports.profit-loss']))
         <div x-data="{ open: {{ $inReports ? 'true' : 'false' }} }" class="accordion-group">
             <button @click="open = !open" :aria-expanded="open" class="accordion-trigger" aria-controls="reports-panel" id="reports-btn">
                 <i class="fas fa-chart-pie"></i><span>Reports</span>
@@ -263,6 +293,21 @@
                 @if($canAccess(['reports.fees']))
                 <a href="{{ route('reports.fees') }}" class="nav-link {{ request()->routeIs('reports.fees') ? 'active' : '' }}">
                     <i class="fas fa-money-bill-wave"></i><span>Fee Collection</span>
+                </a>
+                @endif
+                @if($canAccess(['reports.income']))
+                <a href="{{ route('reports.income') }}" class="nav-link {{ request()->routeIs('reports.income') ? 'active' : '' }}">
+                    <i class="fas fa-circle-plus"></i><span>Income</span>
+                </a>
+                @endif
+                @if($canAccess(['reports.expenditure']))
+                <a href="{{ route('reports.expenditure') }}" class="nav-link {{ request()->routeIs('reports.expenditure') ? 'active' : '' }}">
+                    <i class="fas fa-circle-minus"></i><span>Expenditure</span>
+                </a>
+                @endif
+                @if($canAccess(['reports.profit-loss']))
+                <a href="{{ route('reports.profit-loss') }}" class="nav-link {{ request()->routeIs('reports.profit-loss') ? 'active' : '' }}">
+                    <i class="fas fa-chart-line"></i><span>Profit & Loss</span>
                 </a>
                 @endif
             </div>

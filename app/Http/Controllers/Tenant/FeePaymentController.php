@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Tenant;
 use App\Http\Controllers\Controller;
 use App\Models\Tenant\Fee;
 use App\Models\Tenant\FeePayment;
+use App\Models\Tenant\Student;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,15 +35,62 @@ class FeePaymentController extends Controller
         return view('fees.payments.index', compact('payments', 'totalCollected'));
     }
 
+    public function searchStudent(Request $request): JsonResponse
+    {
+        $q = $request->string('q', '');
+        $students = Student::with('schoolClass')
+            ->where(function ($query) use ($q) {
+                $query->where('first_name', 'like', "%{$q}%")
+                    ->orWhere('last_name', 'like', "%{$q}%")
+                    ->orWhere('admission_no', 'like', "%{$q}%")
+                    ->orWhere('phone', 'like', "%{$q}%");
+            })
+            ->orderBy('first_name')
+            ->limit(30)
+            ->get()
+            ->map(fn ($s) => [
+                'id'         => $s->id,
+                'text'       => "{$s->full_name} ({$s->admission_no}) — {$s->schoolClass?->display_name}",
+                'full_name'  => $s->full_name,
+                'admission_no' => $s->admission_no,
+                'class_name' => $s->schoolClass?->display_name,
+            ]);
+
+        return response()->json($students);
+    }
+
     public function create(Request $request): View
     {
         $preselectedFee = null;
+        $studentFees = collect();
+        $selectedStudent = null;
+        $studentFeesJson = '[]';
+
         if ($request->filled('fee_id')) {
             $preselectedFee = Fee::with(['student', 'category'])->find($request->integer('fee_id'));
         }
-        return view('fees.payments.create', [
-            'fee' => $preselectedFee,
-        ]);
+
+        if ($request->filled('student_id')) {
+            $selectedStudent = Student::with('schoolClass')->find($request->integer('student_id'));
+            if ($selectedStudent) {
+                $studentFees = Fee::with('category')
+                    ->where('student_id', $selectedStudent->id)
+                    ->whereIn('status', ['pending', 'partial', 'overdue'])
+                    ->orderBy('due_date')
+                    ->get();
+
+                $studentFeesJson = $studentFees->map(fn ($f) => [
+                    'id'       => $f->id,
+                    'category' => $f->category->name ?? '—',
+                    'amount'   => number_format($f->amount, 2),
+                    'balance'  => number_format($f->balance(), 2),
+                    'due_date' => $f->due_date?->format('d M Y'),
+                    'status'   => $f->status,
+                ])->toJson();
+            }
+        }
+
+        return view('fees.payments.create', compact('preselectedFee', 'studentFees', 'studentFeesJson', 'selectedStudent'));
     }
 
     public function store(Request $request): RedirectResponse

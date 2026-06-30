@@ -56,7 +56,7 @@ class TeacherController extends Controller
 
     public function show(Teacher $teacher): View
     {
-        $teacher->load('subject', 'subjects', 'classTeacher');
+        $teacher->load('subject', 'subjects', 'classTeacher', 'increments');
         return view('teachers.show', compact('teacher'));
     }
 
@@ -104,6 +104,17 @@ class TeacherController extends Controller
             'subject_id.*'    => ['required', 'exists:tenant.subjects,id'],
             'class_teacher_id'=> ['nullable', 'exists:tenant.classes,id'],
             'status'          => ['nullable', 'string', 'in:working,resigned,transfer'],
+            'pf_number'       => ['nullable', 'string', 'max:50'],
+            'esi_number'      => ['nullable', 'string', 'max:50'],
+            'uan_number'      => ['nullable', 'string', 'max:50'],
+            'bank_account'    => ['nullable', 'string', 'max:30'],
+            'ifsc_code'       => ['nullable', 'string', 'max:20'],
+            'basic_pay'       => ['nullable', 'numeric', 'min:0'],
+            'hra'             => ['nullable', 'numeric', 'min:0'],
+            'da'              => ['nullable', 'numeric', 'min:0'],
+            'conveyance'      => ['nullable', 'numeric', 'min:0'],
+            'medical_allowance'=> ['nullable', 'numeric', 'min:0'],
+            'other_allowances' => ['nullable', 'numeric', 'min:0'],
         ]);
     }
 }
