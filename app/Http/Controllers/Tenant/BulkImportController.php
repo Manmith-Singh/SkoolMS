@@ -51,7 +51,7 @@ class BulkImportController extends Controller
         ]);
 
         $rows    = $this->readRows($request->file('file'));
-        $classes = SchoolClass::orderBy('name')->get()->keyBy(fn ($c) => strtolower(trim(($c->name ?? '') . ' ' . ($c->section ?? ''))));
+        $classes = SchoolClass::orderBy('id')->get()->keyBy(fn ($c) => strtolower(trim(($c->name ?? '') . ' ' . ($c->section ?? ''))));
 
         $created = 0;
         $skipped = 0;

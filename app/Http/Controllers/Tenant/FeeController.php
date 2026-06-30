@@ -28,7 +28,7 @@ class FeeController extends Controller
         }
 
         $fees = $query->orderBy('due_date')->paginate(25)->withQueryString();
-        $classes    = SchoolClass::orderBy('name')->get();
+        $classes    = SchoolClass::orderBy('id')->get();
         $categories = FeeCategory::orderBy('name')->get();
 
         return view('fees.fees.index', compact('fees', 'classes', 'categories'));
@@ -38,7 +38,7 @@ class FeeController extends Controller
     {
         $students    = Student::with('schoolClass')->orderBy('first_name')->get();
         $categories  = FeeCategory::where('is_active', true)->orderBy('name')->get();
-        $classes     = SchoolClass::orderBy('name')->get();
+        $classes     = SchoolClass::orderBy('id')->get();
         return view('fees.fees.create', compact('students', 'categories', 'classes'));
     }
 

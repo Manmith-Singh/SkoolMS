@@ -34,7 +34,7 @@ class ReportController extends Controller
 
         $results = $query->orderByDesc('id')->limit(500)->get();
         $exams   = Exam::orderByDesc('from_date')->limit(100)->get();
-        $classes = SchoolClass::orderBy('name')->get();
+        $classes = SchoolClass::orderBy('id')->get();
 
         $summary = [
             'total'      => $results->count(),
@@ -63,7 +63,7 @@ class ReportController extends Controller
         }
 
         $students = $students->get();
-        $classes = SchoolClass::orderBy('name')->get();
+        $classes = SchoolClass::orderBy('id')->get();
 
         return view('reports.attendance', compact('students', 'classes', 'month', 'classIds'));
     }

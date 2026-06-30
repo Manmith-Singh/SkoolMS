@@ -33,7 +33,7 @@ class TeacherController extends Controller
     public function create(): View
     {
         $subjects = Subject::orderBy('name')->get();
-        $classes  = SchoolClass::orderBy('name')->get();
+        $classes  = SchoolClass::orderBy('id')->get();
         return view('teachers.create', compact('subjects', 'classes'));
     }
 
@@ -63,7 +63,7 @@ class TeacherController extends Controller
     public function edit(Teacher $teacher): View
     {
         $subjects = Subject::orderBy('name')->get();
-        $classes  = SchoolClass::orderBy('name')->get();
+        $classes  = SchoolClass::orderBy('id')->get();
         $teacher->load('subjects');
         return view('teachers.edit', compact('teacher', 'subjects', 'classes'));
     }

@@ -22,13 +22,13 @@ class SubjectController extends Controller
             }
         }
         $subjects = $query->orderBy('name')->paginate(20)->withQueryString();
-        $classes  = SchoolClass::orderBy('name')->get();
+        $classes  = SchoolClass::orderBy('id')->get();
         return view('subjects.index', compact('subjects', 'classes'));
     }
 
     public function create(): View
     {
-        $classes = SchoolClass::orderBy('name')->get();
+        $classes = SchoolClass::orderBy('id')->get();
         return view('subjects.create', compact('classes'));
     }
 
@@ -53,7 +53,7 @@ class SubjectController extends Controller
 
     public function edit(Subject $subject): View
     {
-        $classes = SchoolClass::orderBy('name')->get();
+        $classes = SchoolClass::orderBy('id')->get();
         $subject->load('classes');
         return view('subjects.edit', compact('subject', 'classes'));
     }

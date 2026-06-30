@@ -28,14 +28,14 @@ class StudentController extends Controller
         }
 
         $students = $query->orderBy('admission_no')->get();
-        $classes  = SchoolClass::orderBy('name')->get();
+        $classes  = SchoolClass::orderBy('id')->get();
 
         return view('students.index', compact('students', 'classes'));
     }
 
     public function create(): View
     {
-        $classes = SchoolClass::orderBy('name')->get();
+        $classes = SchoolClass::orderBy('id')->get();
         return view('students.create', compact('classes'));
     }
 
@@ -60,7 +60,7 @@ class StudentController extends Controller
 
     public function edit(Student $student): View
     {
-        $classes = SchoolClass::orderBy('name')->get();
+        $classes = SchoolClass::orderBy('id')->get();
         return view('students.edit', compact('student', 'classes'));
     }
 

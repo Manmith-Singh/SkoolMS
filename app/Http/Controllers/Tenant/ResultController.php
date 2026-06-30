@@ -34,7 +34,7 @@ class ResultController extends Controller
         $results = $query->orderByDesc('id')->paginate(25)->withQueryString();
         $exams   = Exam::orderByDesc('from_date')->limit(50)->get();
         $students = Student::orderBy('first_name')->limit(200)->get();
-        $classes = SchoolClass::orderBy('name')->get();
+        $classes = SchoolClass::orderBy('id')->get();
 
         return view('results.index', compact('results', 'exams', 'students', 'classes'));
     }

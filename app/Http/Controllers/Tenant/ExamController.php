@@ -23,7 +23,7 @@ class ExamController extends Controller
 
     public function create(): View
     {
-        $classes   = SchoolClass::orderBy('name')->get();
+        $classes   = SchoolClass::orderBy('id')->get();
         $subjects  = Subject::with('classes')->orderBy('name')->get();
         $examTypes = ExamType::orderBy('name')->get();
         return view('exams.create', compact('classes', 'subjects', 'examTypes'));
@@ -91,7 +91,7 @@ class ExamController extends Controller
 
     public function edit(Exam $exam): View
     {
-        $classes   = SchoolClass::orderBy('name')->get();
+        $classes   = SchoolClass::orderBy('id')->get();
         $subjects  = Subject::with('classes')->orderBy('name')->get();
         $examTypes = ExamType::orderBy('name')->get();
         $exam->load('classes', 'subjects');

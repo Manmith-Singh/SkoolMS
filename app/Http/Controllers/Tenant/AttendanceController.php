@@ -31,14 +31,14 @@ class AttendanceController extends Controller
         }
 
         $records = $query->paginate(30)->withQueryString();
-        $classes = SchoolClass::orderBy('name')->get();
+        $classes = SchoolClass::orderBy('id')->get();
 
         return view('attendance.index', compact('records', 'classes'));
     }
 
     public function mark(): View
     {
-        $classes = SchoolClass::orderBy('name')->get();
+        $classes = SchoolClass::orderBy('id')->get();
         $students = collect();
         $selectedClass = null;
         $date = request('date', today()->toDateString());
