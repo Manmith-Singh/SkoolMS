@@ -12,7 +12,7 @@ class ClassController extends Controller
 {
     public function index(): View
     {
-        $classes = SchoolClass::withCount('students')->orderBy('name')->paginate(20);
+        $classes = SchoolClass::withCount('students')->orderBy('id')->paginate(20);
         return view('classes.index', compact('classes'));
     }
 
