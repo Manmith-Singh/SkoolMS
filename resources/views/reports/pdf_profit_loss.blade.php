@@ -24,14 +24,14 @@ th { background: #f0f0f0; }
 <h3>Income by type</h3>
 <table>
     <thead><tr><th>Category</th><th class="text-end">Amount</th></tr></thead>
-    <tbody>@foreach($incomeByType as $type)<tr><td>{{ $type->name ?? 'Uncategorized' }}</td><td class="text-end">{{ number_format($type->total, 2) }}</td></tr>@endforeach</tbody>
-    <tfoot><tr><th>Total</th><th class="text-end">{{ number_format(collect($incomeByType)->sum('total'), 2) }}</th></tr></tfoot>
+    <tbody>@foreach($incomeByType as $name => $amount)<tr><td>{{ $name }}</td><td class="text-end">{{ number_format($amount, 2) }}</td></tr>@endforeach</tbody>
+    <tfoot><tr><th>Total</th><th class="text-end">{{ number_format($incomeByType->sum(), 2) }}</th></tr></tfoot>
 </table>
 
 <h3>Expenditure by type</h3>
 <table>
     <thead><tr><th>Category</th><th class="text-end">Amount</th></tr></thead>
-    <tbody>@foreach($expenditureByType as $type)<tr><td>{{ $type->name ?? 'Uncategorized' }}</td><td class="text-end">{{ number_format($type->total, 2) }}</td></tr>@endforeach</tbody>
-    <tfoot><tr><th>Total</th><th class="text-end">{{ number_format(collect($expenditureByType)->sum('total'), 2) }}</th></tr></tfoot>
+    <tbody>@foreach($expenditureByType as $name => $amount)<tr><td>{{ $name }}</td><td class="text-end">{{ number_format($amount, 2) }}</td></tr>@endforeach</tbody>
+    <tfoot><tr><th>Total</th><th class="text-end">{{ number_format($expenditureByType->sum(), 2) }}</th></tr></tfoot>
 </table>
 </body></html>
