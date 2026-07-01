@@ -43,7 +43,17 @@
     <div class="col-md-4">
         <div class="card stat-card p-3" style="border-left-color:#6f42c1;">
             <div class="stat-label">{{ ucfirst($period) }}</div>
-            <div class="stat-value">{{ $start }} — {{ $end }}</div>
+            <div class="stat-value">@php
+                $s = \Carbon\Carbon::parse($start);
+                $e = \Carbon\Carbon::parse($end);
+            @endphp
+            @switch($period)
+                @case('daily')  {{ $s->format('d M Y') }} @break
+                @case('weekly') {{ $s->format('d M') }} — {{ $e->format('d M Y') }} @break
+                @case('monthly'){{ $s->format('M Y') }} @break
+                @case('yearly') {{ $s->format('Y') }} @break
+                @default        {{ $s->format('d M Y') }}
+            @endswitch</div>
         </div>
     </div>
 </div>
@@ -77,10 +87,10 @@
         <table class="table mb-0">
             <thead><tr><th>Type</th><th class="text-end">Amount</th></tr></thead>
             <tbody>
-                @forelse($byType as $type)
+                @forelse($byType as $name => $amount)
                 <tr>
-                    <td>{{ $type->name ?? 'Uncategorized' }}</td>
-                    <td class="text-end">{{ number_format($type->total, 2) }}</td>
+                    <td>{{ $name }}</td>
+                    <td class="text-end">{{ number_format($amount, 2) }}</td>
                 </tr>
                 @empty
                 <tr><td colspan="2" class="text-center text-muted py-3">No data.</td></tr>
@@ -89,7 +99,7 @@
             <tfoot>
                 <tr class="table-active">
                     <th>Total</th>
-                    <th class="text-end">{{ number_format(collect($byType)->sum('total'), 2) }}</th>
+                    <th class="text-end">{{ number_format($byType->sum(), 2) }}</th>
                 </tr>
             </tfoot>
         </table>
