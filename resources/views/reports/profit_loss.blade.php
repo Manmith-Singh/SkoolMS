@@ -8,7 +8,7 @@
     <form method="GET" class="row g-2 align-items-end">
         <div class="col-md-2">
             <label class="form-label small">Period</label>
-            <select name="period" class="form-select">
+            <select name="period" class="form-select" onchange="this.form.submit()">
                 <option value="daily" @selected(request('period', 'monthly') == 'daily')>Daily</option>
                 <option value="weekly" @selected(request('period') == 'weekly')>Weekly</option>
                 <option value="monthly" @selected(request('period', 'monthly') == 'monthly')>Monthly</option>
@@ -58,10 +58,10 @@
                 <table class="table mb-0">
                     <thead><tr><th>Category</th><th class="text-end">Amount</th></tr></thead>
                     <tbody>
-                        @forelse($incomeByType as $type)
+                        @forelse($incomeByType as $name => $amount)
                         <tr>
-                            <td>{{ $type->name ?? 'Uncategorized' }}</td>
-                            <td class="text-end text-success">{{ number_format($type->total, 2) }}</td>
+                            <td>{{ $name }}</td>
+                            <td class="text-end text-success">{{ number_format($amount, 2) }}</td>
                         </tr>
                         @empty
                         <tr><td colspan="2" class="text-center text-muted py-3">No income.</td></tr>
@@ -70,7 +70,7 @@
                     <tfoot>
                         <tr class="table-active">
                             <th>Total</th>
-                            <th class="text-end text-success">{{ number_format(collect($incomeByType)->sum('total'), 2) }}</th>
+                            <th class="text-end text-success">{{ number_format($incomeByType->sum(), 2) }}</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -84,10 +84,10 @@
                 <table class="table mb-0">
                     <thead><tr><th>Category</th><th class="text-end">Amount</th></tr></thead>
                     <tbody>
-                        @forelse($expenditureByType as $type)
+                        @forelse($expenditureByType as $name => $amount)
                         <tr>
-                            <td>{{ $type->name ?? 'Uncategorized' }}</td>
-                            <td class="text-end text-danger">{{ number_format($type->total, 2) }}</td>
+                            <td>{{ $name }}</td>
+                            <td class="text-end text-danger">{{ number_format($amount, 2) }}</td>
                         </tr>
                         @empty
                         <tr><td colspan="2" class="text-center text-muted py-3">No expenditure.</td></tr>
@@ -96,7 +96,7 @@
                     <tfoot>
                         <tr class="table-active">
                             <th>Total</th>
-                            <th class="text-end text-danger">{{ number_format(collect($expenditureByType)->sum('total'), 2) }}</th>
+                            <th class="text-end text-danger">{{ number_format($expenditureByType->sum(), 2) }}</th>
                         </tr>
                     </tfoot>
                 </table>

@@ -8,7 +8,7 @@
     <form method="GET" class="row g-2 align-items-end">
         <div class="col-md-2">
             <label class="form-label small">Period</label>
-            <select name="period" class="form-select">
+            <select name="period" class="form-select" onchange="this.form.submit()">
                 <option value="daily" @selected(request('period', 'monthly') == 'daily')>Daily</option>
                 <option value="weekly" @selected(request('period') == 'weekly')>Weekly</option>
                 <option value="monthly" @selected(request('period', 'monthly') == 'monthly')>Monthly</option>
