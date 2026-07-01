@@ -45,7 +45,7 @@
                 <tr><th>Date</th><th>Type</th><th>Description</th><th>Amount</th><th>Reference</th><th>Paid by</th><th>Approved by</th><th class="no-sort">Actions</th></tr>
             </thead>
             <tbody>
-                @foreach($expenditures as $e)
+                @foreach($transactions as $e)
                 <tr>
                     <td>{{ $e->date->format('d M Y') }}</td>
                     <td>{{ $e->type->name ?? '—' }}</td>
@@ -68,7 +68,7 @@
     </div>
     <div class="card-footer d-flex justify-content-between align-items-center">
         <span><strong>Total: {{ number_format($total, 2) }}</strong></span>
-        {{ $expenditures->links() }}
+        {{ $transactions->links() }}
     </div>
 </div>
 @endsection
