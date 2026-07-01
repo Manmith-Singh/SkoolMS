@@ -29,12 +29,12 @@ class PayrollController extends Controller
         $payrolls = $query->paginate(25)->withQueryString();
         $teachers = Teacher::orderBy('first_name')->get();
 
-        $totals = (clone $query)->select(
-            DB::raw('SUM(gross_salary) as total_gross'),
-            DB::raw('SUM(pf_deduction) as total_pf'),
-            DB::raw('SUM(esi_deduction) as total_esi'),
-            DB::raw('SUM(total_deductions) as total_deductions'),
-            DB::raw('SUM(net_salary) as total_net')
+        $totals = (clone $query)->reorder()->select(
+            DB::raw('COALESCE(SUM(gross_salary),0) as total_gross'),
+            DB::raw('COALESCE(SUM(pf_deduction),0) as total_pf'),
+            DB::raw('COALESCE(SUM(esi_deduction),0) as total_esi'),
+            DB::raw('COALESCE(SUM(total_deductions),0) as total_deductions'),
+            DB::raw('COALESCE(SUM(net_salary),0) as total_net')
         )->first();
 
         return view('payroll.index', compact('payrolls', 'teachers', 'totals'));
