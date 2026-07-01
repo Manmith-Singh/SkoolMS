@@ -17,7 +17,7 @@
         </div>
         <div class="col-md-2">
             <label class="form-label small">Date</label>
-            <input type="date" name="date" value="{{ request('date', date('Y-m-d')) }}" class="form-control">
+            <input type="date" name="date" value="{{ request('date', date('Y-m-d')) }}" class="form-control" onchange="this.form.submit()">
         </div>
         <div class="col-md-2 d-flex gap-2">
             <button class="btn btn-outline-primary"><i class="fas fa-filter"></i> Apply</button>
